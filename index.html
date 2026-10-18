@@ -248,7 +248,7 @@ p{margin:0;line-height:1.35}
 .stat .sub{font-size:12px;color:var(--pencil);line-height:1;white-space:nowrap}
 .stat.score{background:#fff6e4}
 .stat.score .v{font-size:40px}
-.stat.score .stars{font-size:22px;color:var(--coin);letter-spacing:2px;line-height:1}
+.stat.score .stars{font-size:38px;color:var(--coin);letter-spacing:3px;line-height:1}
 .lifetime{font-size:14px;color:var(--pencil)}
 .credit{position:absolute;left:0;right:0;bottom:6px;text-align:center;font-family:var(--display);font-size:16px;color:var(--pencil);letter-spacing:1px;pointer-events:none}
 #title-save{font-size:15px;color:var(--pencil);margin-top:2px}
@@ -258,9 +258,10 @@ p{margin:0;line-height:1.35}
 @keyframes bob{from{transform:translateY(0)}to{transform:translateY(-6px)}}
 @media (prefers-reduced-motion:reduce){.hint{animation:none}}
 #share-modal{position:absolute;inset:0;background:rgba(43,43,43,.72);display:flex;align-items:center;justify-content:center;z-index:20;gap:14px}
-#share-modal img{height:92%;max-width:60%;object-fit:contain;border:3px solid #fff;box-shadow:0 8px 30px rgba(0,0,0,.4);background:#fff}
-#share-modal .col{display:flex;flex-direction:column;gap:10px;max-width:280px}
-#share-modal .col p{color:#fff;font-size:16px}
+#share-modal img{height:90%;max-width:calc(100% - 340px);object-fit:contain;border:3px solid #fff;box-shadow:0 8px 30px rgba(0,0,0,.4);background:#fff}
+#share-modal .col{display:flex;flex-direction:column;gap:10px;width:250px;flex:none;align-items:stretch;text-align:center}
+#share-modal .col p{color:#fff;font-size:17px;line-height:1.35;margin:0 0 4px}
+#share-modal .col .btn{font-size:21px;padding:9px 12px}
 #share-modal .col .btn{background:#fff;color:var(--ink);border-color:var(--ink);box-shadow:3px 3px 0 rgba(0,0,0,.35)}
 #share-x{position:absolute;top:10px;right:12px;width:52px;height:52px;border-radius:50%;background:#fff;border:3px solid var(--ink);font-family:var(--display);font-weight:700;font-size:30px;line-height:1;cursor:pointer;box-shadow:2px 2px 0 rgba(0,0,0,.35);z-index:21}
 .savebox{display:flex;flex-direction:column;gap:6px;max-width:520px}
@@ -438,7 +439,7 @@ p{margin:0;line-height:1.35}
     </div>
     <p class="credit">made by YH</p>
   </section>
-    <div id="share-modal" hidden><button id="share-x" aria-label="닫기">✕</button><img id="share-img" alt="자랑 카드"><div class="col"><p id="share-msg">이미지를 길게 누르면 저장할 수 있다.</p><button class="btn" id="share-send">카톡 등으로 보내기</button><button class="btn ghost" id="share-close">닫기</button></div></div>
+    <div id="share-modal" hidden><button id="share-x" aria-label="닫기">✕</button><img id="share-img" alt="자랑 카드"><div class="col"><p id="share-msg">이미지를 길게 누르면 저장할 수 있다.</p><button class="btn" id="share-send">카톡 등으로 보내기</button><button class="btn" id="share-save">그림 저장</button><button class="btn ghost" id="share-close">닫기</button></div></div>
 
 </div>
 </div>
@@ -1171,11 +1172,13 @@ function buildShareCard(){
   x.fillStyle='#8c8b86'; x.font='30px Gaegu, sans-serif'; x.fillText('악어악어 점령 · made by YH',540,1290);
   return c;
 }
-$('res-share').addEventListener('click',()=>{ sfx('tap'); try{ const c=buildShareCard(); c.toBlob(bl=>{ shareBlob=bl; $('share-img').src=URL.createObjectURL(bl); $('share-modal').hidden=false; const can=!!(navigator.share&&navigator.canShare&&navigator.canShare({files:[new File([bl],'a.png',{type:'image/png'})]})); $('share-send').hidden=!can; $('share-msg').textContent=can?'보내기를 누르면 카톡·문자로 바로 간다. 그림을 길게 누르면 저장.':'그림을 길게 눌러 저장한 뒤 보내면 된다.'; },'image/png'); }catch(e){ $('share-msg').textContent='카드를 만들지 못했다.'; } });
+$('res-share').addEventListener('click',()=>{ sfx('tap'); try{ const c=buildShareCard(); c.toBlob(bl=>{ shareBlob=bl; $('share-img').src=URL.createObjectURL(bl); $('share-modal').hidden=false; shareFiles=false; try{ shareFiles=!!(navigator.canShare&&navigator.canShare({files:[new File([bl],'a.png',{type:'image/png'})]})); }catch(e){} const canAny=!!navigator.share; $('share-send').hidden=!canAny; $('share-msg').textContent=shareFiles?'보내기 → 카톡·문자로 그림이 바로 간다':(canAny?'보내기는 게임 링크만 간다. 그림은 저장해서 보내자':'그림을 저장한 뒤 카톡에 붙이면 된다'); },'image/png'); }catch(e){ $('share-msg').textContent='카드를 만들지 못했다.'; } });
 const closeShare=()=>{$('share-modal').hidden=true;};
 $('share-close').addEventListener('click',closeShare); $('share-x').addEventListener('click',closeShare);
 $('share-modal').addEventListener('click',e=>{ if(e.target===e.currentTarget||e.target.classList.contains('col'))closeShare(); });
-$('share-send').addEventListener('click',async()=>{ if(!shareBlob)return; try{ const f=new File([shareBlob],'akeo-akeo.png',{type:'image/png'}); await navigator.share({files:[f],title:'악어악어 점령',text:'악어악어 점령 결과!'}); }catch(e){} });
+let shareFiles=false;
+$('share-send').addEventListener('click',async()=>{ if(!shareBlob)return; try{ if(shareFiles){ const f=new File([shareBlob],'akeo-akeo.png',{type:'image/png'}); await navigator.share({files:[f],title:'악어악어 점령',text:'악어악어 점령 결과!'}); } else await navigator.share({title:'악어악어 점령',text:'악어악어 점령 결과! '+( $('res-board').querySelector('.score .v')||{}).textContent+'점',url:location.href}); }catch(e){} });
+$('share-save').addEventListener('click',()=>{ if(!shareBlob)return; const a=document.createElement('a'); a.href=URL.createObjectURL(shareBlob); a.download='akeo-akeo.png'; a.target='_blank'; document.body.appendChild(a); a.click(); setTimeout(()=>a.remove(),500); });
 $('res-retry').textContent='다시 하기';
 $('res-retry').addEventListener('click',()=>{sfx('tap');if(lastBossLoss)openPick();else startBattle(cur);});
 $('retreat').addEventListener('click',()=>{sfx('tap');if(B){B.over=true;}show('s-map');});
