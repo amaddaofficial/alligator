@@ -6,7 +6,7 @@
    World: a child's pencil drawings on white paper — every character is one of those drawings, cut from the photos. Single light "paper" theme by design. */
 :root{
   --paper:#fbfaf5; --ink:#2b2b2b; --pencil:#8c8b86; --line:#d3d1c8;
-  --swamp:#5f9b55; --coin:#d9a441; --fire:#d8673a; --water:#4f8fc4; --leaf:#5f9b55; --rock:#8f7f66;
+  --swamp:#5f9b55; --xpc:#8e63c9; --coin:#d9a441; --fire:#d8673a; --water:#4f8fc4; --leaf:#5f9b55; --rock:#8f7f66;
   --display:'Gaegu','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
   --body:'Gaegu','Apple SD Gothic Neo','Noto Sans KR','Malgun Gothic',sans-serif;
   color-scheme:light;
@@ -32,6 +32,8 @@ p{margin:0;line-height:1.35}
 .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
 .btn:focus-visible{outline:3px solid var(--water);outline-offset:3px}
 .btn.big{font-size:34px;padding:16px 34px}
+.btn.go{background:var(--swamp);color:#fff;border-color:#3b6b35;box-shadow:3px 3px 0 #2c4f27}
+.btn.go:active{box-shadow:1px 1px 0 #2c4f27}
 .btn.ghost{background:transparent;box-shadow:none;border-color:var(--pencil);color:var(--pencil);font-size:19px;padding:6px 14px}
 .btn[disabled]{opacity:.45;cursor:default}
 .row{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
@@ -40,6 +42,8 @@ p{margin:0;line-height:1.35}
 .wallet span{display:inline-flex;align-items:center;gap:6px}
 .dot{width:14px;height:14px;border-radius:50%;border:2px solid var(--ink);display:inline-block}
 .dot.coin{background:var(--coin)}.dot.xp{background:#fff}.dot.fire{background:var(--fire)}.dot.oasis{background:var(--water)}
+.lvc{display:inline-flex;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;background:var(--xpc);color:#fff;border:2.5px solid var(--ink);font-family:var(--display);font-weight:700;font-size:16px;line-height:1;box-shadow:1px 1px 0 var(--line)}
+.wallet .xpw{font-size:17px;color:var(--pencil)}
 .tag{display:inline-block;font-family:var(--display);font-size:13px;font-weight:700;line-height:1;padding:3px 6px;border-radius:8px 6px 9px 6px;color:#fff;background:var(--pencil)}
 .tag.single{background:#6f6e68}.tag.area{background:#b4532a}.tag.elem-불{background:#d8673a}.tag.elem-물{background:#4f8fc4}.tag.elem-나무{background:#5f9b55}.tag.elem-돌{background:#8f7f66}.tag.support{background:#b98a2f}
 
@@ -207,12 +211,15 @@ p{margin:0;line-height:1.35}
 #s-result{align-items:center;justify-content:flex-start;background:rgba(251,250,245,.94);text-align:center;gap:6px;padding-top:14px}
 #s-result h1{font-size:54px}
 #s-result #res-sub{font-size:19px;max-width:40em}
-.board{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:100%;max-width:860px}
+.board{display:flex;flex-direction:column;gap:8px;width:100%;max-width:860px;align-items:center}
+.board .top{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%;max-width:560px}
+.board .sub{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;width:100%;max-width:760px}
+.stat.mini{padding:4px 4px 4px;gap:1px}.stat.mini .lb{font-size:12px}.stat.mini .v{font-size:20px}.stat.mini .sub{font-size:11px}
 .stat{background:#fff;border:2.5px solid var(--ink);border-radius:12px 10px 14px 10px / 10px 14px 10px 12px;box-shadow:2px 2px 0 var(--line);padding:6px 4px 5px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
 .stat .lb{font-size:13px;color:var(--pencil);line-height:1;white-space:nowrap}
 .stat .v{font-family:var(--display);font-weight:700;font-size:26px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
 .stat .sub{font-size:12px;color:var(--pencil);line-height:1;white-space:nowrap}
-.stat.score{grid-column:span 2;background:#fff6e4}
+.stat.score{background:#fff6e4}
 .stat.score .v{font-size:40px}
 .stat.score .stars{font-size:22px;color:var(--coin);letter-spacing:2px;line-height:1}
 .lifetime{font-size:14px;color:var(--pencil)}
@@ -223,10 +230,12 @@ p{margin:0;line-height:1.35}
 .hint.up::after{bottom:auto;top:-14px;border-top:0;border-bottom:12px solid var(--ink)}
 @keyframes bob{from{transform:translateY(0)}to{transform:translateY(-6px)}}
 @media (prefers-reduced-motion:reduce){.hint{animation:none}}
-#share-modal{position:absolute;inset:0;background:rgba(43,43,43,.55);display:flex;align-items:center;justify-content:center;z-index:20;gap:14px}
+#share-modal{position:absolute;inset:0;background:rgba(43,43,43,.72);display:flex;align-items:center;justify-content:center;z-index:20;gap:14px}
 #share-modal img{height:92%;max-width:60%;object-fit:contain;border:3px solid #fff;box-shadow:0 8px 30px rgba(0,0,0,.4);background:#fff}
 #share-modal .col{display:flex;flex-direction:column;gap:10px;max-width:280px}
 #share-modal .col p{color:#fff;font-size:16px}
+#share-modal .col .btn{background:#fff;color:var(--ink);border-color:var(--ink);box-shadow:3px 3px 0 rgba(0,0,0,.35)}
+#share-x{position:absolute;top:10px;right:12px;width:52px;height:52px;border-radius:50%;background:#fff;border:3px solid var(--ink);font-family:var(--display);font-weight:700;font-size:30px;line-height:1;cursor:pointer;box-shadow:2px 2px 0 rgba(0,0,0,.35);z-index:21}
 .savebox{display:flex;flex-direction:column;gap:6px;max-width:520px}
 .savebox textarea{width:100%;height:58px;font-family:ui-monospace,monospace;font-size:12px;border:2px solid var(--line);border-radius:8px;padding:6px;resize:none;background:#fff;color:var(--ink)}
 #s-settings .tools2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex:1;min-height:0;align-content:start}
@@ -393,14 +402,14 @@ p{margin:0;line-height:1.35}
     <div class="rewards" id="res-rewards"></div>
     <p class="lifetime" id="res-life"></p>
     <div class="row" style="justify-content:center;margin-top:2px">
-      <button class="btn big" id="res-next">다음 성</button>
+      <button class="btn big go" id="res-next">다음 성 ▶</button>
       <button class="btn" id="res-retry">다시 하기</button>
       <button class="btn" data-go="s-map">지도실</button>
       <button class="btn" id="res-share">자랑하기</button>
     </div>
     <p class="credit">made by YH</p>
-    <div id="share-modal" hidden><img id="share-img" alt="자랑 카드"><div class="col"><p id="share-msg">이미지를 길게 누르면 저장할 수 있다.</p><button class="btn" id="share-send">카톡 등으로 보내기</button><button class="btn ghost" id="share-close">닫기</button></div></div>
   </section>
+    <div id="share-modal" hidden><button id="share-x" aria-label="닫기">✕</button><img id="share-img" alt="자랑 카드"><div class="col"><p id="share-msg">이미지를 길게 누르면 저장할 수 있다.</p><button class="btn" id="share-send">카톡 등으로 보내기</button><button class="btn ghost" id="share-close">닫기</button></div></div>
 
 </div>
 </div>
@@ -418,9 +427,10 @@ for(const k in SRC){const im=new Image();im.src=SRC[k];IMG[k]=im;}
 // elem: 불(화상) 물(둔화) 나무(묶기) 돌(기절). 불>나무>물>돌>불 — 상성이면 2배
 const UNITS=[
  // 기본스크린
+ {id:'croc',name:'악어',tier:'기본스크린',spr:'croc_a',cost:30,hp:45,atk:5,spd:65,range:28,cd:1.1,re:1.5,h:50,type:'melee',tip:'제일 싸다, 제일 먼저'},
  {id:'basic',name:'악어악어',tier:'기본스크린',spr:'akeoakeo',cost:50,hp:70,atk:7,spd:70,range:30,cd:1.0,re:2.5,h:56,type:'melee',tip:'밸런스'},
  {id:'sad',name:'슬픈악어',tier:'기본스크린',spr:'sad',cost:40,hp:50,atk:4,spd:60,range:30,cd:1.2,re:2,h:60,type:'melee',tip:'싸다, 많이'},
- {id:'angry',name:'화난악어',tier:'기본스크린',spr:'angry',cost:120,hp:70,atk:18,spd:85,range:32,cd:0.8,re:4,h:58,type:'melee',tip:'세게, 빨리'},
+ {id:'angry',name:'화난악어',tier:'기본스크린',spr:'angry',cost:120,hp:70,atk:18,spd:85,range:40,cd:0.8,re:4,h:58,type:'multi',tip:'세게, 빨리, 앞쪽 전부'},
  {id:'sleepy',name:'잠꾸러기악어',tier:'기본스크린',spr:'sleepy',cost:140,hp:340,atk:5,spd:40,range:28,cd:1.6,re:6,h:70,type:'melee',sleeps:true,tip:'튼튼, 가끔 잠'},
  {id:'drink',name:'음료수악어',tier:'기본스크린',spr:'drink',cost:110,hp:150,atk:8,spd:55,range:30,cd:1.2,re:4,h:70,type:'melee',heal:20,tip:'근처 친구 회복'},
  {id:'reality',name:'리얼리티악어',tier:'기본스크린',spr:'reality',cost:160,hp:260,atk:20,spd:50,range:45,cd:1.3,re:6,h:44,type:'melee',tip:'진짜 악어'},
@@ -452,7 +462,7 @@ const UNITS=[
  {id:'jump',name:'점프악어',tier:'이벤트스크린',spr:'jump',cost:200,hp:150,atk:26,spd:70,range:44,cd:1.1,re:6,h:66,type:'multi',tip:'뛰어서 찍기'},
  {id:'runaway',name:'도망쳐악어',tier:'이벤트스크린',spr:'runaway',cost:60,hp:60,atk:12,spd:110,range:30,cd:0.7,re:2,h:60,type:'melee',tip:'치고 빠진다'},
  {id:'plane',name:'비행기악어',tier:'이벤트스크린',spr:'plane',cost:320,hp:110,atk:15,spd:140,range:150,cd:1.0,re:9,h:48,type:'bullet',fly:120,tip:'높이 날며 쏜다'},
- {id:'monster',name:'괴물악어',tier:'이벤트스크린',spr:'monster',cost:550,hp:600,atk:55,spd:45,range:60,cd:1.8,re:16,h:76,type:'melee',tip:'괴물'},
+ {id:'monster',name:'괴물악어',tier:'이벤트스크린',spr:'monster',cost:550,hp:600,atk:55,spd:45,range:70,cd:1.8,re:16,h:76,type:'multi',tip:'괴물, 앞쪽을 쓸어버린다'},
  {id:'corpse',name:'시체악어',tier:'이벤트스크린',spr:'corpse',cost:70,hp:300,atk:3,spd:30,range:26,cd:2.0,re:4,h:50,type:'melee',tip:'느리고 질기다'},
  // 슈퍼스크린
  {id:'slow',name:'느린악어',tier:'슈퍼스크린',spr:'slow',cost:120,hp:350,atk:30,spd:25,range:34,cd:2.0,re:6,h:62,type:'melee',tip:'느리지만 세다'},
@@ -464,9 +474,9 @@ const UNITS=[
  {id:'time',name:'시간악어',tier:'슈퍼스크린',spr:'time',cost:420,hp:180,atk:20,spd:100,range:60,cd:0.4,re:12,h:50,type:'melee',tip:'8배 빠른 공격'},
  {id:'tankS',name:'탱크악어',tier:'슈퍼스크린',spr:'tankS',cost:520,hp:500,atk:45,spd:35,range:220,cd:2.6,re:15,h:74,type:'arc',splash:60,tip:'포탄, 튼튼'},
  {id:'money',name:'돈악어',tier:'슈퍼스크린',spr:'money',cost:250,hp:120,atk:10,spd:60,range:30,cd:1.2,re:8,h:56,type:'melee',coin:6,tip:'때릴 때마다 돈'},
- {id:'burst',name:'폭딜악어',tier:'슈퍼스크린',spr:'burst',cost:480,hp:150,atk:120,spd:55,range:50,cd:3.0,re:14,h:60,type:'melee',tip:'한 입에 120'},
+ {id:'burst',name:'폭딜악어',tier:'슈퍼스크린',spr:'burst',cost:480,hp:150,atk:120,spd:55,range:60,cd:3.0,re:14,h:60,type:'multi',tip:'한 입에 120, 앞쪽 전부'},
  {id:'sphinx',name:'스핑크스악어',tier:'슈퍼스크린',spr:'sphinx',cost:360,hp:380,atk:35,spd:45,range:80,cd:1.6,re:12,h:50,type:'multi',tip:'앞쪽 전부'},
- {id:'white',name:'백악어',tier:'슈퍼스크린',spr:'white',cost:340,hp:300,atk:32,spd:60,range:40,cd:1.0,re:10,h:56,type:'melee',tip:'하얗다'},
+ {id:'white',name:'뱀악어',tier:'슈퍼스크린',spr:'white',cost:340,hp:300,atk:32,spd:60,range:48,cd:1.0,re:10,h:56,type:'melee',tip:'뱀 팔로 휘감는다'},
  // 레어스크린
  {id:'mall',name:'백화점악어',tier:'레어스크린',spr:'mall',cost:700,hp:800,atk:40,spd:40,range:60,cd:1.5,re:20,h:80,type:'multi',tip:'카트에 탄 악어들'},
  {id:'lens',name:'렌즈악어',tier:'레어스크린',spr:'lens',cost:450,hp:150,atk:45,spd:50,range:300,cd:2.2,re:12,h:56,type:'bullet',tip:'찰칵'},
@@ -517,7 +527,7 @@ function skillOf(u){
 const TIER_ORDER=['기본스크린','스크린','이벤트스크린','슈퍼스크린','레어스크린','특별'];
 const TIER_W={'기본스크린':40,'스크린':28,'이벤트스크린':15,'슈퍼스크린':9,'레어스크린':3,'특별':5};
 const START_TIERS=new Set(['기본스크린','스크린','이벤트스크린']);
-const DEFAULT_PARTY=['basic','sad','angry','tank','sword','archer','cannon','grass','spin','big'];
+const DEFAULT_PARTY=['croc','basic','sad','angry','tank','sword','archer','cannon','grass','big'];
 const CLASS=u=>u.elem?'속성':(['spin','multi','arc','deliver'].includes(u.type)?'범위':'단일');
 const RANGED=u=>['arrow','bullet','burst','arc'].includes(u.type);
 const BEATS={'불':'나무','나무':'물','물':'돌','돌':'불'};
@@ -569,7 +579,7 @@ const BOSSES={
 // ---------- save ----------
 const KEY='akeo-akeo-v1';
 const startOwned=()=>UNITS.filter(u=>START_TIERS.has(u.tier)).map(u=>u.id);
-const fresh=()=>({coins:0,xp:0,charcoal:1,oasis:0,walletLv:0,hpLv:0,atkLv:0,cleared:{'소':[],'중':[],'대':[]},round:{'소':1,'중':1,'대':1},owned:startOwned(),party:DEFAULT_PARTY.slice(),stats:{games:0,kills:0,intruders:0,clears:0,bossWins:0,best:0,coins:0},opt:{sound:true,bgm:true,vib:true},lv:{},explore:null,eventDay:'',dexClaimed:0,tierClaimed:[],tut:{}});
+const fresh=()=>({coins:0,xp:0,charcoal:1,oasis:0,walletLv:0,hpLv:0,atkLv:0,cleared:{'소':[],'중':[],'대':[]},round:{'소':1,'중':1,'대':1},owned:startOwned(),party:DEFAULT_PARTY.slice(),stats:{games:0,kills:0,intruders:0,clears:0,bossWins:0,best:0,coins:0},opt:{sound:true,bgm:true,vib:true},lv:{},explore:null,eventDay:'',dexClaimed:0,tierClaimed:[],tut:{},mig1:1,xpTotal:0});
 let S=fresh();
 try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);S=Object.assign(fresh(),o);
   // older saves stored names; keep ids only, and always include the starting friends
@@ -577,6 +587,8 @@ try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);S=Object
   S.owned=Array.from(new Set((o.owned||[]).map(x=>byName[x]||x).filter(x=>UBY[x]).concat(startOwned())));
   if(!Array.isArray(o.party)||!o.party.every(x=>UBY[x]))S.party=DEFAULT_PARTY.slice();
   if(!o.round)S.round={'소':1,'중':1,'대':1};
+  if(typeof o.xpTotal!=='number'){S.xpTotal=(o.xp||0)+Object.values(o.lv||{}).reduce((a,l)=>a+100*l*(l+1)/2,0);}
+  if(!o.mig1){S.mig1=1;if(!S.party.includes('croc'))S.party=['croc',...S.party].slice(0,10);} // 새 기본 친구 '악어'를 한 번만 맨 앞에 넣는다
   S.stats=Object.assign({games:0,kills:0,intruders:0,clears:0,bossWins:0,best:0,coins:0},o.stats||{});
   S.opt=Object.assign({sound:true,bgm:true,vib:true},o.opt||{});
   S.lv=o.lv||{}; S.explore=o.explore||null; S.eventDay=o.eventDay||''; S.dexClaimed=o.dexClaimed||0; S.tierClaimed=o.tierClaimed||[]; S.tut=o.tut||{};
@@ -681,8 +693,13 @@ $('news-back').addEventListener('click',()=>show(newsFrom));
 $('party-back').addEventListener('click',()=>show(partyFrom));
 $('title-croc').src=SRC.croc_a; $('title-frog').src=SRC.frog_green; $('fire-img').src=SRC.croc_b; $('tile-party').src=SRC.croc_a;
 
+// 누적 XP로 매기는 플레이어 레벨: Lv.2=100, Lv.3=300, Lv.4=600 … (레벨 n까지 100·n(n-1)/2)
+const playerLv=()=>Math.max(1,Math.floor((1+Math.sqrt(1+8*(S.xpTotal||0)/100))/2));
+const lvNeed=l=>100*l*(l-1)/2;
+function addXp(n){ S.xp+=n; S.xpTotal=(S.xpTotal||0)+n; }
 function walletHtml(){
-  return `<span><i class="dot coin"></i>코인 ${S.coins}</span><span><i class="dot xp"></i>XP ${S.xp}</span><span><i class="dot fire"></i>숯불 ${S.charcoal}</span><span><i class="dot oasis"></i>오아시스 ${S.oasis}</span>`;
+  const L=playerLv(), nxt=lvNeed(L+1)-(S.xpTotal||0);
+  return `<span><i class="dot coin"></i>코인 ${S.coins}</span><span><i class="dot fire"></i>숯불 ${S.charcoal}</span><span><i class="dot oasis"></i>오아시스 ${S.oasis}</span><span title="누적 XP ${S.xpTotal||0} · 다음 레벨까지 ${nxt} · 쓸 수 있는 XP ${S.xp}(편성에서 친구 레벨업)"><i class="lvc">${L}</i><span class="xpw">XP ${S.xp}</span></span>`;
 }
 function tagHtml(u){const c=CLASS(u);return c==='속성'?`<span class="tag elem-${u.elem}">${u.elem}</span>`:`<span class="tag ${c==='범위'?'area':'single'}">${c}</span>`;}
 function renderTitle(){
@@ -818,7 +835,7 @@ $('fire-btn').addEventListener('click',()=>{
   let r=Math.random()*100, tier=TIER_ORDER[0];
   for(const t of TIER_ORDER){ if(r<TIER_W[t]){tier=t;break;} r-=TIER_W[t]; }
   const pool=UNITS.filter(u=>u.tier===tier&&!u.noGet); const u=pool[Math.floor(Math.random()*pool.length)];
-  const isNew=!S.owned.includes(u.id); if(isNew)S.owned.push(u.id); else S.xp+=20; save();
+  const isNew=!S.owned.includes(u.id); if(isNew)S.owned.push(u.id); else addXp(20); save();
   const rare=tier==='레어스크린'||tier==='특별'||tier==='슈퍼스크린';
   const el=$('fire-reveal'), box=$('firebox'), img=$('fire-img');
   $('fire-btn').disabled=true; el.classList.remove('pop','rare'); el.textContent='…'; $('fire-sub').textContent='숯불이 타오른다';
@@ -1066,15 +1083,15 @@ function end(win,boss){
   if(win)score+=200*B.st.n*B.round;
   score=Math.round(score*d.reward);
   let roundUp=false, oasis=0;
-  if(win&&B.st.event){ coins=Math.round(300*d.reward*roundReward(B.round)); xp=120*B.round; oasis=1; S.coins+=coins; S.xp+=xp; S.oasis+=oasis; S.eventDay=today(); S.stats.clears++; }
+  if(win&&B.st.event){ coins=Math.round(300*d.reward*roundReward(B.round)); xp=120*B.round; oasis=1; S.coins+=coins; addXp(xp); S.oasis+=oasis; S.eventDay=today(); S.stats.clears++; }
   else if(win){
     const first=!S.cleared[diff].includes(B.i);
     coins=Math.round((260+150*B.i)*d.reward*roundReward(B.round)); xp=60*(B.i+1)*B.round; fire=first?1:(Math.random()<0.6?1:0);
-    if(first)S.cleared[diff].push(B.i); S.coins+=coins; S.xp+=xp; S.charcoal+=fire;
+    if(first)S.cleared[diff].push(B.i); S.coins+=coins; addXp(xp); S.charcoal+=fire;
     const allDone=STAGES.every((s,k)=>s.locked||s.hidden||S.cleared[diff].includes(k));
     if(allDone&&S.round[diff]<MAX_ROUND){ S.round[diff]++; S.cleared[diff]=[]; roundUp=true; S.charcoal+=2; }
     S.stats.clears++; if(bz.win)S.stats.bossWins++;
-  } else { xp=10*(B.kills>0?1:0)+Math.round(score/50); coins=Math.round(score/10); S.xp+=xp; S.coins+=coins; }
+  } else { xp=10*(B.kills>0?1:0)+Math.round(score/50); coins=Math.round(score/10); addXp(xp); S.coins+=coins; }
   if(win){sfx('win');vib([40,30,40,30,120]);} else {sfx('lose');vib(120);}
   S.stats.games++; S.stats.kills+=B.kills; S.stats.intruders+=B.intruders; S.stats.coins+=coins; const isBest=score>S.stats.best; if(isBest)S.stats.best=score;
   save();
@@ -1086,14 +1103,17 @@ function end(win,boss){
     const mmss=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
     const tile=(lb,v,sub,cls)=>`<div class="stat ${cls||''}"><span class="lb">${lb}</span><span class="v">${v}</span>${sub?`<span class="sub">${sub}</span>`:''}</div>`;
     $('res-board').innerHTML=
+      `<div class="top">`+
       tile('점수',score.toLocaleString(),isBest?'최고 기록!':`최고 ${S.stats.best.toLocaleString()}`,'score')+
-      tile('처치',B.kills,B.intruders?`난입 ${B.intruders}`:'')+
-      tile('토성 피해',Math.round(B.dmgBase).toLocaleString(),B.ebaseMax?`/ ${B.ebaseMax.toLocaleString()}`:'')+
-      tile('소환',`${B.deployed}명`,`쓴 돈 ${B.spent}${B.cannonShots?` · 대포 ${B.cannonShots}`:''}`)+
-      tile('시간',mmss((B.waveT||0)+(bz.t||0)),bz.t?`보스전 ${mmss(bz.t)}`:'')+
-      (B.boss?tile('보스',bz.win?'승리':'패배',`맞힘 ${bz.hits} · 하트 ${bz.hearts}/${bz.max}`):tile('보스','—',B.st.event?'이벤트':'못 만남'))+
-      (stars?`<div class="stat score"><span class="lb">평가</span><span class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</span><span class="sub">${stars===3?'완벽한 점령':stars===2?'잘했다':'아슬아슬'}</span></div>`:'');
-    $('res-rewards').innerHTML=`<span><i class="dot coin"></i>코인 +${coins}</span><span><i class="dot xp"></i>XP +${xp}</span>${fire?`<span><i class="dot fire"></i>숯불 +${fire}</span>`:''}${oasis?`<span><i class="dot oasis"></i>오아시스 +${oasis}</span>`:''}${win?'':'<span class="small">(진 판도 점수만큼은 챙긴다)</span>'}`;
+      `<div class="stat score"><span class="lb">평가</span><span class="stars">${stars?'★'.repeat(stars)+'☆'.repeat(3-stars):'☆☆☆'}</span><span class="sub">${stars===3?'완벽한 점령':stars===2?'잘했다':stars===1?'아슬아슬':(boss?'보스에게 졌다':'토성이 무너졌다')}</span></div>`+
+      `</div><div class="sub">`+
+      tile('처치',B.kills,B.intruders?`난입 ${B.intruders}`:'','mini')+
+      tile('토성 피해',Math.round(B.dmgBase).toLocaleString(),B.ebaseMax?`/ ${B.ebaseMax.toLocaleString()}`:'','mini')+
+      tile('소환',`${B.deployed}명`,`쓴 돈 ${B.spent}${B.cannonShots?` · 대포 ${B.cannonShots}`:''}`,'mini')+
+      tile('시간',mmss((B.waveT||0)+(bz.t||0)),bz.t?`보스전 ${mmss(bz.t)}`:'','mini')+
+      (B.boss?tile('보스',bz.win?'승리':'패배',`맞힘 ${bz.hits} · 하트 ${bz.hearts}/${bz.max}`,'mini'):tile('보스','—',B.st.event?'이벤트':'못 만남','mini'))+
+      `</div>`;
+    $('res-rewards').innerHTML=`<span><i class="dot coin"></i>코인 +${coins}</span>${fire?`<span><i class="dot fire"></i>숯불 +${fire}</span>`:''}${oasis?`<span><i class="dot oasis"></i>오아시스 +${oasis}</span>`:''}<span><i class="lvc">${playerLv()}</i>XP +${xp}</span>${win?'':'<span class="small">(진 판도 점수만큼은 챙긴다)</span>'}`;
     $('res-life').textContent=`누적 · 판 ${S.stats.games} · 처치 ${S.stats.kills} · 점령 ${S.stats.clears} · 보스 승리 ${S.stats.bossWins} · 모은 코인 ${S.stats.coins.toLocaleString()} · 자동 저장됨`;
     const nx=STAGES[B.i+1]; $('res-next').hidden=!(win&&((nx&&!nx.locked&&!nx.hidden)||roundUp)&&!B.st.event);
     $('res-next').textContent=roundUp?`${S.round[diff]}-1 시작`:'다음 성'; $('res-next').dataset.round=roundUp?'1':'';
@@ -1123,7 +1143,9 @@ function buildShareCard(){
   return c;
 }
 $('res-share').addEventListener('click',()=>{ sfx('tap'); try{ const c=buildShareCard(); c.toBlob(bl=>{ shareBlob=bl; $('share-img').src=URL.createObjectURL(bl); $('share-modal').hidden=false; const can=!!(navigator.share&&navigator.canShare&&navigator.canShare({files:[new File([bl],'a.png',{type:'image/png'})]})); $('share-send').hidden=!can; $('share-msg').textContent=can?'보내기를 누르면 카톡·문자로 바로 간다. 그림을 길게 누르면 저장.':'그림을 길게 눌러 저장한 뒤 보내면 된다.'; },'image/png'); }catch(e){ $('share-msg').textContent='카드를 만들지 못했다.'; } });
-$('share-close').addEventListener('click',()=>{$('share-modal').hidden=true;});
+const closeShare=()=>{$('share-modal').hidden=true;};
+$('share-close').addEventListener('click',closeShare); $('share-x').addEventListener('click',closeShare);
+$('share-modal').addEventListener('click',e=>{ if(e.target===e.currentTarget||e.target.classList.contains('col'))closeShare(); });
 $('share-send').addEventListener('click',async()=>{ if(!shareBlob)return; try{ const f=new File([shareBlob],'akeo-akeo.png',{type:'image/png'}); await navigator.share({files:[f],title:'악어악어 점령',text:'악어악어 점령 결과!'}); }catch(e){} });
 $('res-retry').textContent='다시 하기';
 $('res-retry').addEventListener('click',()=>{sfx('tap');if(lastBossLoss)openPick();else startBattle(cur);});
