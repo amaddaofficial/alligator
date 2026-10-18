@@ -24,6 +24,7 @@ HEAD = f"""<!doctype html>
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="{TITLE}">
 <link rel="icon" type="image/png" href="icon.png">
+<link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icon.png">
 <!-- 링크를 보낼 때 뜨는 제목·그림 (카카오톡, 문자, 슬랙 등) -->
 <meta property="og:type" content="website">
