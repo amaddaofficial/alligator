@@ -523,39 +523,39 @@ const RANGED=u=>['arrow','bullet','burst','arc'].includes(u.type);
 const BEATS={'불':'나무','나무':'물','물':'돌','돌':'불'};
 
 const ENEMY={
- frog:    {name:'개구리',  spr:'frog_green',hp:45, atk:4, spd:55, range:30, cd:1.0,h:48, flip:false,bounty:26, elem:'물'},
- gorilla: {name:'고릴라',  spr:'gorilla',   hp:90, atk:7, spd:42, range:36, cd:1.4,h:66, flip:true, bounty:60, elem:'나무'},
- hippo:   {name:'하마',    spr:'hippo',     hp:230,atk:16,spd:30, range:50, cd:1.8,h:90, flip:false,bounty:130,elem:'돌'},
- piranha: {name:'피라냐',  spr:'piranha',   hp:80, atk:11,spd:85, range:26, cd:0.7,h:70, flip:false,bounty:70, elem:'물'},
- camel:   {name:'낙타',    spr:'camel',     hp:420,atk:22,spd:28, range:70, cd:1.9,h:120,flip:false,bounty:170,elem:'돌'},
- jelly:   {name:'해파리',  spr:'jelly',     hp:150,atk:12,spd:38, range:34, cd:1.2,h:64, flip:false,bounty:110,elem:'물', fly:45},
- snowman: {name:'눈사람',  spr:'snowman',   hp:260,atk:14,spd:24, range:230,cd:2.2,h:100,flip:false,bounty:160,elem:'물', ranged:'snow'},
+ frog:    {name:'개구리',  spr:'frog_green',hp:34, atk:3, spd:55, range:30, cd:1.0,h:48, flip:false,bounty:34, elem:'물'},
+ gorilla: {name:'고릴라',  spr:'gorilla',   hp:70, atk:5, spd:42, range:36, cd:1.4,h:66, flip:true, bounty:75, elem:'나무'},
+ hippo:   {name:'하마',    spr:'hippo',     hp:170,atk:12,spd:30, range:50, cd:1.8,h:90, flip:false,bounty:150,elem:'돌'},
+ piranha: {name:'피라냐',  spr:'piranha',   hp:60, atk:8, spd:85, range:26, cd:0.7,h:70, flip:false,bounty:85, elem:'물'},
+ camel:   {name:'낙타',    spr:'camel',     hp:320,atk:16,spd:28, range:70, cd:1.9,h:120,flip:false,bounty:200,elem:'돌'},
+ jelly:   {name:'해파리',  spr:'jelly',     hp:110,atk:9, spd:38, range:34, cd:1.2,h:64, flip:false,bounty:130,elem:'물', fly:45},
+ snowman: {name:'눈사람',  spr:'snowman',   hp:200,atk:10,spd:24, range:230,cd:2.2,h:100,flip:false,bounty:190,elem:'물', ranged:'snow'},
  // 난입 악당 — 스테이지와 상관없이 가끔 떨어진다
- pig:     {name:'돼지',    spr:'pig',       hp:200,atk:12,spd:75, range:36, cd:1.0,h:72, flip:false,bounty:120,elem:'나무',intruder:true},
- bird:    {name:'새',      spr:'bird',      hp:90, atk:9, spd:120,range:30, cd:0.9,h:80, flip:false,bounty:110,elem:'나무',intruder:true,fly:110},
- golem:   {name:'돌골램',  spr:'golem',     hp:650,atk:24,spd:22, range:40, cd:2.0,h:88, flip:false,bounty:220,elem:'돌', intruder:true},
- dragonE: {name:'드래곤',  spr:'dragon',    hp:520,atk:28,spd:42, range:90, cd:1.6,h:110,flip:true, bounty:260,elem:'불', fly:70, tint:'#b04a3a'},
+ pig:     {name:'돼지',    spr:'pig',       hp:160,atk:10,spd:75, range:36, cd:1.0,h:72, flip:false,bounty:150,elem:'나무',intruder:true},
+ bird:    {name:'새',      spr:'bird',      hp:70, atk:7, spd:120,range:30, cd:0.9,h:80, flip:false,bounty:130,elem:'나무',intruder:true,fly:110},
+ golem:   {name:'돌골램',  spr:'golem',     hp:480,atk:18,spd:22, range:40, cd:2.0,h:36, flip:false,bounty:260,elem:'돌', intruder:true},
+ dragonE: {name:'드래곤',  spr:'dragon',    hp:380,atk:22,spd:42, range:90, cd:1.6,h:110,flip:true, bounty:300,elem:'불', fly:70, tint:'#b04a3a'},
 };
 const INTRUDERS=['pig','bird','golem'];
 const STAGES=[
- {n:1,name:'늪지대',enemy:'frog',   boss:'frog',   count:{'소':25,'중':50,'대':100},interval:2.2,baseHp:1600,color:'#5f9b55',scene:'swamp', elem:'물', sky:'#eef4e4'},
- {n:2,name:'정글',  enemy:'gorilla',boss:'gorilla',count:{'소':16,'중':32,'대':64}, interval:3.0,baseHp:2800,color:'#d8673a',scene:'jungle',elem:'나무',sky:'#f6ecdf'},
- {n:3,name:'호수',  enemy:'hippo',  boss:'hippo',  count:{'소':10,'중':20,'대':40}, interval:3.6,baseHp:4600,color:'#4f8fc4',scene:'lake',  elem:'돌', sky:'#e6eff7'},
- {n:4,name:'강',    enemy:'piranha',boss:'piranha',count:{'소':30,'중':60,'대':100},interval:1.7,baseHp:5200,color:'#3f8fa8',scene:'river', elem:'물', sky:'#e3f0f2'},
- {n:5,name:'사막',  enemy:'camel',  boss:'camel',  count:{'소':9,'중':18,'대':36},  interval:4.0,baseHp:6400,color:'#d9a441',scene:'desert',elem:'돌', sky:'#fbf0d6'},
- {n:6,name:'바다',  enemy:'jelly',  boss:'jelly',  count:{'소':14,'중':28,'대':56}, interval:2.8,baseHp:7200,color:'#2f6fb0',scene:'sea',   elem:'물', sky:'#dfeaf6'},
- {n:7,name:'설원',  enemy:'snowman',boss:'snowman',count:{'소':10,'중':20,'대':40}, interval:3.4,baseHp:8200,color:'#7fa6c9',scene:'snow',  elem:'물', sky:'#f1f4f8'},
+ {n:1,name:'늪지대',enemy:'frog',   boss:'frog',   count:{'소':25,'중':50,'대':100},interval:2.2,baseHp:1300,color:'#5f9b55',scene:'swamp', elem:'물', sky:'#eef4e4'},
+ {n:2,name:'정글',  enemy:'gorilla',boss:'gorilla',count:{'소':16,'중':32,'대':64}, interval:3.0,baseHp:2200,color:'#d8673a',scene:'jungle',elem:'나무',sky:'#f6ecdf'},
+ {n:3,name:'호수',  enemy:'hippo',  boss:'hippo',  count:{'소':10,'중':20,'대':40}, interval:3.6,baseHp:3400,color:'#4f8fc4',scene:'lake',  elem:'돌', sky:'#e6eff7'},
+ {n:4,name:'강',    enemy:'piranha',boss:'piranha',count:{'소':30,'중':60,'대':100},interval:1.7,baseHp:3800,color:'#3f8fa8',scene:'river', elem:'물', sky:'#e3f0f2'},
+ {n:5,name:'사막',  enemy:'camel',  boss:'camel',  count:{'소':9,'중':18,'대':36},  interval:4.0,baseHp:4600,color:'#d9a441',scene:'desert',elem:'돌', sky:'#fbf0d6'},
+ {n:6,name:'바다',  enemy:'jelly',  boss:'jelly',  count:{'소':14,'중':28,'대':56}, interval:2.8,baseHp:5200,color:'#2f6fb0',scene:'sea',   elem:'물', sky:'#dfeaf6'},
+ {n:7,name:'설원',  enemy:'snowman',boss:'snowman',count:{'소':10,'중':20,'대':40}, interval:3.4,baseHp:6000,color:'#7fa6c9',scene:'snow',  elem:'물', sky:'#f1f4f8'},
  {n:8,name:'겁~나 성',locked:true,hidden:true,color:'#8c8b86',scene:'castle',sky:'#ece9e2'},   // 적·보스 그림이 오면 locked/hidden을 지운다
- {n:'E',name:'드래곤 침공',enemy:'dragonE',boss:null,count:{'소':5,'중':8,'대':12},interval:4.2,baseHp:3200,color:'#8c3fb0',scene:'sky',elem:'불',sky:'#ece4f3',event:true,hidden:true},
+ {n:'E',name:'드래곤 침공',enemy:'dragonE',boss:null,count:{'소':5,'중':8,'대':12},interval:4.2,baseHp:2600,color:'#8c3fb0',scene:'sky',elem:'불',sky:'#ece4f3',event:true,hidden:true},
 ];
 const EVENT_I=STAGES.findIndex(s=>s.event);
 const PLAYABLE=STAGES.filter(s=>!s.locked&&!s.hidden).length;
 const MAX_ROUND=3;
-const roundEnemy=r=>1+1.2*(r-1);   // 2회차 2.2배, 3회차 3.4배
+const roundEnemy=r=>1+0.9*(r-1);   // 2회차 1.9배, 3회차 2.8배
 const roundAlly=r=>1+0.5*(r-1);    // 친구들은 회차마다 +50%
 const roundReward=r=>1+0.8*(r-1);
-const RAMP=1.6;
-const DIFF={'소':{hp:1,base:1,reward:1},'중':{hp:1.4,base:1.6,reward:1.6},'대':{hp:1.9,base:2.5,reward:2.5}};
+const RAMP=1.2;
+const DIFF={'소':{hp:1,base:1,reward:1},'중':{hp:1.3,base:1.5,reward:1.6},'대':{hp:1.7,base:2.2,reward:2.5}};
 const BOSSES={
  frog:   {name:'왕개구리', spr:'boss_frog',   h:250,patterns:['slam','tongue','hops']},
  gorilla:{name:'킹고릴라', spr:'boss_gorilla',h:250,patterns:['handslam','rocks','chest']},
@@ -591,19 +591,19 @@ function loadCode(code){
 }
 
 // ---------- sound & vibration: every sound is synthesised, no files ----------
-const AU={ctx:null,master:null,bgm:null,noise:null};
-function auInit(){ if(AU.ctx)return; const C=window.AudioContext||window.webkitAudioContext; if(!C)return; try{ AU.ctx=new C(); AU.master=AU.ctx.createGain(); AU.master.gain.value=0.6; AU.master.connect(AU.ctx.destination); AU.bgm=AU.ctx.createGain(); AU.bgm.gain.value=0.14; AU.bgm.connect(AU.ctx.destination); }catch(e){} }
+const AU={ctx:null,master:null,bgm:null,noise:null,comp:null,voices:0};
+function auInit(){ if(AU.ctx)return; const C=window.AudioContext||window.webkitAudioContext; if(!C)return; try{ AU.ctx=new C(); AU.comp=AU.ctx.createDynamicsCompressor(); AU.comp.threshold.value=-20; AU.comp.knee.value=18; AU.comp.ratio.value=8; AU.comp.attack.value=0.003; AU.comp.release.value=0.12; AU.comp.connect(AU.ctx.destination); const hp=AU.ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=90; hp.connect(AU.comp); AU.master=AU.ctx.createGain(); AU.master.gain.value=0.38; AU.master.connect(hp); const bl=AU.ctx.createBiquadFilter(); bl.type='lowpass'; bl.frequency.value=2600; const bh=AU.ctx.createBiquadFilter(); bh.type='highpass'; bh.frequency.value=160; bl.connect(bh); bh.connect(AU.comp); AU.bgm=AU.ctx.createGain(); AU.bgm.gain.value=0.07; AU.bgm.connect(bl); }catch(e){} }
 let bgmWanted=null;
 function auResume(){ auInit(); if(AU.ctx&&AU.ctx.state==='suspended')AU.ctx.resume(); if(AU.ctx&&bgmWanted&&seqName!==bgmWanted)setTimeout(()=>bgmPlay(bgmWanted),30); }
 document.addEventListener('pointerdown',auResume,{capture:true}); document.addEventListener('keydown',auResume,{capture:true});
-function tone(o){ if(!S.opt.sound||!AU.ctx)return; try{ const c=AU.ctx,t0=c.currentTime+(o.at||0); const osc=c.createOscillator(); osc.type=o.type||'sine'; osc.frequency.setValueAtTime(o.f,t0); if(o.to)osc.frequency.exponentialRampToValueAtTime(o.to,t0+o.d); const g=c.createGain(); g.gain.setValueAtTime(0.0001,t0); g.gain.exponentialRampToValueAtTime(o.v||0.3,t0+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t0+o.d); osc.connect(g); g.connect(AU.master); osc.start(t0); osc.stop(t0+o.d+0.03); }catch(e){} }
-function noise(o){ if(!S.opt.sound&&!o.bgm)return; if(!AU.ctx)return; try{ const c=AU.ctx; if(!AU.noise){AU.noise=c.createBuffer(1,c.sampleRate,c.sampleRate);const d=AU.noise.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;} const t0=c.currentTime+(o.at||0); const src=c.createBufferSource(); src.buffer=AU.noise; const f=c.createBiquadFilter(); f.type=o.hp?'highpass':'lowpass'; f.frequency.value=o.fc||800; const g=c.createGain(); g.gain.setValueAtTime(o.v||0.3,t0); g.gain.exponentialRampToValueAtTime(0.0001,t0+o.d); src.connect(f); f.connect(g); g.connect(o.bgm?AU.bgm:AU.master); src.start(t0); src.stop(t0+o.d+0.03); }catch(e){} }
+function tone(o){ if(!S.opt.sound||!AU.ctx||AU.voices>14)return; try{ const c=AU.ctx,t0=c.currentTime+(o.at||0); const osc=c.createOscillator(); osc.type=o.type||'sine'; osc.frequency.setValueAtTime(o.f,t0); if(o.to)osc.frequency.exponentialRampToValueAtTime(o.to,t0+o.d); const g=c.createGain(); g.gain.setValueAtTime(0.0001,t0); g.gain.linearRampToValueAtTime(o.v||0.3,t0+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t0+o.d); osc.connect(g); g.connect(AU.master); AU.voices++; osc.onended=()=>{AU.voices=Math.max(0,AU.voices-1);}; osc.start(t0); osc.stop(t0+o.d+0.03); }catch(e){} }
+function noise(o){ if(!S.opt.sound&&!o.bgm)return; if(!AU.ctx)return; try{ const c=AU.ctx; if(!AU.noise){AU.noise=c.createBuffer(1,c.sampleRate,c.sampleRate);const d=AU.noise.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;} if(!o.bgm&&AU.voices>14)return; const t0=c.currentTime+(o.at||0); const src=c.createBufferSource(); src.buffer=AU.noise; src.loop=true; src.loopStart=Math.random()*0.5; src.loopEnd=src.loopStart+0.4; const f=c.createBiquadFilter(); f.type=o.hp?'highpass':'lowpass'; f.frequency.value=o.fc||800; const g=c.createGain(); g.gain.setValueAtTime(0.0001,t0); g.gain.linearRampToValueAtTime(o.v||0.3,t0+0.006); g.gain.exponentialRampToValueAtTime(0.0001,t0+o.d); src.connect(f); f.connect(g); g.connect(o.bgm?AU.bgm:AU.master); AU.voices++; src.onended=()=>{AU.voices=Math.max(0,AU.voices-1);}; src.start(t0,src.loopStart); src.stop(t0+o.d+0.03); }catch(e){} }
 const SFX={
  tap:()=>tone({f:700,type:'square',d:0.05,v:0.07}),
  spawn:()=>tone({f:320,to:640,d:0.12,v:0.18}),
- hit:()=>{noise({fc:1200,d:0.06,v:0.22});tone({f:180,type:'triangle',d:0.07,v:0.18});},
+ hit:()=>{noise({fc:1200,d:0.06,v:0.14});tone({f:180,type:'triangle',d:0.07,v:0.12});},
  shoot:()=>tone({f:900,to:380,d:0.1,v:0.13}),
- boom:()=>{noise({fc:400,d:0.35,v:0.5});tone({f:90,to:40,d:0.35,v:0.4});},
+ boom:()=>{noise({fc:400,d:0.35,v:0.35});tone({f:90,to:40,d:0.35,v:0.3});},
  kill:()=>{tone({f:520,type:'square',d:0.07,v:0.13});tone({f:780,type:'square',d:0.1,v:0.13,at:0.07});},
  baseHit:()=>{tone({f:90,d:0.25,v:0.35});noise({fc:300,d:0.2,v:0.3});},
  baseBreak:()=>{noise({fc:600,d:0.8,v:0.5});tone({f:400,to:60,type:'sawtooth',d:0.8,v:0.3});},
@@ -625,29 +625,31 @@ function sfx(n,gap){ const now=performance.now(); if(gap&&sfxLast[n]&&now-sfxLas
 function vib(p){ if(S.opt.vib&&navigator.vibrate){try{navigator.vibrate(p);}catch(e){}} }
 // background music: 16-step loops, one per scene
 const BGM={
- menu:  {bpm:72, wave:'triangle',root:261.6,mel:[0,4,7,null,9,7,4,null,2,4,0,null,7,null,4,null],bass:[-12,null,null,null,-17,null,null,null,-15,null,null,null,-17,null,null,null]},
+ menu:  {bpm:72, wave:'sine',root:261.6,mel:[0,4,7,null,9,7,4,null,2,4,0,null,7,null,4,null],bass:[-12,null,null,null,-17,null,null,null,-15,null,null,null,-17,null,null,null]},
  swamp: {bpm:88, wave:'sine',    root:220,  mel:[0,3,5,null,7,null,5,3,0,null,-2,null,3,null,null,null],bass:[-12,null,-12,null,-9,null,-9,null,-7,null,-7,null,-9,null,-5,null]},
- jungle:{bpm:112,wave:'square',  root:196,  mel:[0,0,7,null,5,null,3,5,0,null,10,null,7,5,3,null],bass:[-12,null,-12,-12,null,-12,null,null,-10,null,-10,-10,null,-7,null,null],perc:true},
+ jungle:{bpm:112,wave:'triangle',root:196,  mel:[0,0,7,null,5,null,3,5,0,null,10,null,7,5,3,null],bass:[-12,null,-12,-12,null,-12,null,null,-10,null,-10,-10,null,-7,null,null],perc:true},
  lake:  {bpm:80, wave:'sine',    root:246.9,mel:[0,4,7,11,7,4,0,null,2,5,9,5,2,null,null,null],bass:[-12,null,null,null,-8,null,null,null,-10,null,null,null,-5,null,null,null]},
  river: {bpm:122,wave:'triangle',root:233,  mel:[0,2,3,5,7,5,3,2,0,null,3,null,5,7,10,null],bass:[-12,null,-12,null,-12,null,-10,null,-8,null,-8,null,-5,null,-5,null]},
  desert:{bpm:98, wave:'sawtooth',root:207.6,mel:[0,1,4,null,5,4,1,0,null,7,5,4,1,null,0,null],bass:[-12,null,null,-12,null,null,-12,null,-11,null,null,-11,null,null,-7,null]},
  sea:   {bpm:96, wave:'sine',    root:261.6,mel:[0,null,4,7,null,4,0,null,5,null,9,12,null,9,5,null],bass:[-12,null,null,-12,null,null,-7,null,-7,null,null,-5,null,null,-12,null]},
  snow:  {bpm:84, wave:'sine',    root:523.3,mel:[0,null,7,null,4,null,12,null,9,null,7,null,4,null,0,null],bass:[-24,null,null,null,-20,null,null,null,-19,null,null,null,-17,null,null,null],bell:true},
- sky:   {bpm:132,wave:'square',  root:220,  mel:[0,null,3,null,7,null,3,null,0,null,5,null,8,null,7,null],bass:[-12,-12,null,-12,null,-12,-12,null,-9,-9,null,-9,null,-7,-7,null],perc:true},
- boss:  {bpm:140,wave:'square',  root:174.6,mel:[0,null,0,3,null,0,6,5,0,null,0,3,null,8,6,5],bass:[-12,-12,null,-12,-12,null,-12,null,-10,-10,null,-10,-10,null,-5,null],perc:true},
+ sky:   {bpm:132,wave:'triangle',root:220,  mel:[0,null,3,null,7,null,3,null,0,null,5,null,8,null,7,null],bass:[-12,-12,null,-12,null,-12,-12,null,-9,-9,null,-9,null,-7,-7,null],perc:true},
+ boss:  {bpm:140,wave:'sawtooth',root:174.6,mel:[0,null,0,3,null,0,6,5,0,null,0,3,null,8,6,5],bass:[-12,-12,null,-12,-12,null,-12,null,-10,-10,null,-10,-10,null,-5,null],perc:true},
 };
-let seqTimer=null,seqStep=0,seqName=null;
+let seqTimer=null,seqStep=0,seqName=null,seqNext=0;
 function bgmStop(){ if(seqTimer)clearInterval(seqTimer); seqTimer=null; seqName=null; }
 function bgmPlay(name){
   bgmWanted=name; if(!name){bgmStop();return;} if(seqName===name)return; bgmStop();
-  if(!S.opt.bgm||!AU.ctx)return; const P=BGM[name]; if(!P)return; seqName=name; seqStep=0;
-  const stepMs=60000/P.bpm/2;
-  seqTimer=setInterval(()=>{ if(!AU.ctx)return; const i=seqStep%16, c=AU.ctx, t0=c.currentTime;
-    const play=(semi,g,dur,wave)=>{try{const o=c.createOscillator();o.type=wave;o.frequency.value=P.root*Math.pow(2,semi/12);const gn=c.createGain();gn.gain.setValueAtTime(g,t0);gn.gain.exponentialRampToValueAtTime(0.0001,t0+dur);o.connect(gn);gn.connect(AU.bgm);o.start(t0);o.stop(t0+dur+0.02);}catch(e){}};
-    if(P.mel[i]!=null)play(P.mel[i],0.5,P.bell?0.7:stepMs/1000*1.6,P.wave);
-    if(P.bass[i]!=null)play(P.bass[i],0.55,stepMs/1000*1.8,'triangle');
-    if(P.perc&&i%4===0)noise({fc:900,d:0.05,v:0.35,bgm:true});
-    seqStep++; },stepMs);
+  if(!S.opt.bgm||!AU.ctx)return; const P=BGM[name]; if(!P)return; seqName=name; seqStep=0; seqNext=AU.ctx.currentTime+0.08;
+  const stepS=60/P.bpm/2;
+  const play=(semi,g,dur,wave,t0)=>{try{const c=AU.ctx;const o=c.createOscillator();o.type=wave;o.frequency.value=P.root*Math.pow(2,semi/12);const gn=c.createGain();gn.gain.setValueAtTime(0.0001,t0);gn.gain.linearRampToValueAtTime(g,t0+0.015);gn.gain.setValueAtTime(g,t0+Math.max(0.02,dur*0.35));gn.gain.exponentialRampToValueAtTime(0.0001,t0+dur);o.connect(gn);gn.connect(AU.bgm);o.start(t0);o.stop(t0+dur+0.02);}catch(e){}};
+  const tick=()=>{ if(!AU.ctx||seqName!==name)return; const c=AU.ctx;
+    while(seqNext<c.currentTime+0.3){ const i=seqStep%16, t0=seqNext;
+      if(P.mel[i]!=null)play(P.mel[i],0.5,P.bell?0.7:stepS*1.5,P.wave,t0);
+      if(P.bass[i]!=null)play(P.bass[i]+12,0.4,stepS*1.6,'triangle',t0);     // 베이스는 한 옥타브 위에서: 폰 스피커가 낼 수 있는 음역
+      if(P.perc&&i%4===0)noise({fc:1200,d:0.045,v:0.22,bgm:true,at:t0-c.currentTime});
+      seqStep++; seqNext+=stepS; } };
+  tick(); seqTimer=setInterval(tick,80);
 }
 function applyOpt(){ if(!S.opt.bgm)bgmStop(); else if(bgmWanted)bgmPlay(bgmWanted); document.querySelectorAll('.tg').forEach(el=>{const k=el.dataset.opt;el.classList.toggle('on',!!S.opt[k]);el.querySelector('b').textContent=S.opt[k]?'켬':'끔';}); const m=S.opt.sound||S.opt.bgm; for(const id of ['mute-w','mute-b']){$(id).textContent=m?'소리 켬':'소리 끔';} }
 function toggleMute(){ const on=!(S.opt.sound||S.opt.bgm); S.opt.sound=on; S.opt.bgm=on; save(); applyOpt(); if(on)sfx('tap'); }
@@ -856,10 +858,10 @@ function startBattle(i){
   const st=STAGES[i], d=DIFF[diff];
   cur=i;
   const r=S.round[diff];
-  B={st,i,t:0,round:r,money:105+45*S.walletLv,income:14+4*S.walletLv,cap:900,wallet:0,
+  B={st,i,t:0,round:r,money:120+50*S.walletLv,income:18+5*S.walletLv,cap:1200,wallet:0,
      party:S.party.map(id=>UBY[id]),
      allies:[],enemies:[],proj:[],eproj:[],fx:[],cd:{},snow:[],
-     total:st.count[diff],spawned:0,nextSpawn:1.5,intruderT:14+Math.random()*8,
+     total:st.count[diff],spawned:0,nextSpawn:1.5,intruderT:22+Math.random()*10,
      baseMax:Math.round((1000+300*S.hpLv)*roundAlly(r)),ebaseMax:Math.round(st.baseHp*d.base*roundEnemy(r)),ebaseShake:0,
      over:false,atkMul:(1+0.1*S.atkLv)*roundAlly(r),hpMul:roundAlly(r),kills:0,intruders:0,deployed:0,spent:0,earned:0,dmgBase:0,waveT:0,boss:null,bannerT:0,stop:0,shake:0,cannon:0,cannonFx:0,cannonShots:0,midDone:false};
   $('banner').classList.remove('on');
@@ -884,7 +886,7 @@ function buildBar(){
   });
   $('wbtn').addEventListener('pointerdown',e=>{e.preventDefault();upWallet();});
 }
-function walletCost(){return 100*(B.wallet+1);}
+function walletCost(){return 80*(B.wallet+1);}
 function fireCannon(){
   if(!B||B.over)return;
   if(B.cannon<1){ if(S.oasis>0){S.oasis--;save();banner('오아시스! 대포 충전');} else {sfx('tap');return;} }
@@ -894,7 +896,7 @@ function fireCannon(){
   hitBase(Math.round(dmg*0.6));
 }
 $('cannon-btn').addEventListener('pointerdown',e=>{e.preventDefault();fireCannon();});
-function upWallet(){if(B.over||B.wallet>=8)return;const c=walletCost();if(B.money>=c){B.money-=c;B.spent+=c;B.wallet++;B.income+=8;B.cap+=300;sfx('levelup');vib(15);}}
+function upWallet(){if(B.over||B.wallet>=8)return;const c=walletCost();if(B.money>=c){B.money-=c;B.spent+=c;B.wallet++;B.income+=10;B.cap+=300;sfx('levelup');vib(15);}}
 function deploy(u){
   if(!B||B.over)return; if((B.cd[u.id]||0)>0||B.money<u.cost)return;
   B.money-=u.cost; B.cd[u.id]=u.re; B.deployed++; B.spent+=u.cost; sfx('spawn'); vib(12);
@@ -904,9 +906,9 @@ function deploy(u){
   B.allies.push({side:'a',def:u,lvm:lvMul(u.id),x:BASE_X-70-Math.random()*20,y:GROUND,hp,max:hp,face:-1,atk:0,hw,h:u.h,flash:0,lunge:0,hop:0,spinT:0,breathT:0,cyc:Math.random()*3,asleep:false,dead:false,fade:1,slow:0,pop:0.3,dvx:0,dvy:0,rot:0});
 }
 function spawnEnemy(def,idx,big){
-  let mul=DIFF[diff].hp*(1+RAMP*idx/Math.max(1,B.total-1))*roundEnemy(B.round)*(def.intruder?(1+0.35*B.i):1);
-  if(big){ def=Object.assign({},def,{name:'큰 '+def.name,bounty:def.bounty*6,atk:def.atk*2,mid:true}); mul*=6; }
-  const h=def.h*(big?1.9:1)*(1+0.12*Math.log2(Math.max(1,big?mul/6:mul)));
+  let mul=DIFF[diff].hp*(1+RAMP*idx/Math.max(1,B.total-1))*roundEnemy(B.round)*(def.intruder?(1+0.25*B.i):1);
+  if(big){ def=Object.assign({},def,{name:'큰 '+def.name,bounty:def.bounty*5,atk:def.atk*1.6,mid:true}); mul*=4; }
+  const h=def.h*(big?1.35:1)*(1+0.12*Math.log2(Math.max(1,big?mul/4:mul)));
   B.enemies.push({side:'e',def,x:EBASE_X+Math.random()*30,y:EBASE_Y+40,vy:0,falling:true,hp:def.hp*mul,max:def.hp*mul,atkP:def.atk*mul,face:1,atk:def.cd*0.6,hw:h*ratioOf(def.spr,1.4)*0.5,h,flash:0,lunge:0,dead:false,fade:1,burn:0,slow:0,root:0,stun:0,bob:Math.random()*6});
   if(def.intruder){banner(`난입! ${def.name}`);sfx('danger');vib([60,40,60]);}
   if(big){banner(`중간 보스! ${def.name}`);sfx('danger');vib([80,40,80]);}
@@ -920,8 +922,8 @@ function hurt(u,amt,atx,elem){
   const fy=u.y-u.h*0.55-(u.def.fly||0);
   B.fx.push({x:atx,y:fy,t:0.3,kind:'hit',c:elem?ELEMC[elem]:null});
   B.fx.push({x:atx+(Math.random()-0.5)*20,y:fy-10,t:0.7,kind:'num',val:Math.round(amt),c:u.side==='e'?(elem?ELEMC[elem]:'#2b2b2b'):'#d8673a',big:amt>=50});
-  if(u.side==='e'){ sfx('hit',70); if(amt>=50){B.stop=Math.max(B.stop,0.045);B.shake=Math.max(B.shake,0.15);vib(18);} }
-  else sfx('hit',120);
+  if(u.side==='e'){ sfx('hit',120); if(amt>=50){B.stop=Math.max(B.stop,0.045);B.shake=Math.max(B.shake,0.15);vib(18);} }
+  else sfx('hit',160);
   if(u.hp<=0){ u.dead=true; u.dvy=-260; u.dvx=(u.side==='e'?1:-1)*(80+Math.random()*80); u.rot=0;
     if(u.side==='e'){ B.money=Math.min(B.cap+500,B.money+u.def.bounty); B.earned+=u.def.bounty; B.kills++; if(u.def.intruder)B.intruders++;
       sfx('kill',60); vib(u.def.boss||u.def.intruder?[30,30,60]:22); B.fx.push({x:u.x,y:fy,t:0.65,kind:'coin',x0:u.x,y0:fy}); if(u.def.intruder||u.h>90){B.stop=Math.max(B.stop,0.06);B.shake=Math.max(B.shake,0.25);} } }
@@ -1036,13 +1038,13 @@ function update(dt){
   for(const k in B.cd)B.cd[k]=Math.max(0,B.cd[k]-dt);
   if(B.spawned<B.total){ B.nextSpawn-=dt; if(B.nextSpawn<=0){
       const n=(B.spawned>3&&B.spawned%7===6)?3:1;
-      for(let k=0;k<n&&B.spawned<B.total;k++){ const prev=B.i>0&&!B.st.event?STAGES[B.i-1].enemy:null; const def=ENEMY[(prev&&Math.random()<0.3)?prev:B.st.enemy]; spawnEnemy(def,B.spawned); B.spawned++; }
+      for(let k=0;k<n&&B.spawned<B.total;k++){ const prev=B.i>0&&!B.st.event?STAGES[B.i-1].enemy:null; const def=ENEMY[(prev&&Math.random()<0.07)?prev:B.st.enemy]; spawnEnemy(def,B.spawned); B.spawned++; }
       if(n>1){banner('무더기 낙하!');sfx('danger');}
       if(!B.midDone&&B.spawned>=Math.floor(B.total/2)&&!B.st.event){ B.midDone=true; spawnEnemy(ENEMY[B.st.enemy],B.spawned,true); }
       B.nextSpawn=B.st.interval*(0.65+Math.random()*0.7)*(n>1?1.6:1); } }
   // 토성 대포 게이지
   B.cannon=Math.min(1,B.cannon+dt/26); B.cannonFx=Math.max(0,B.cannonFx-dt);
-  B.intruderT-=dt; if(B.intruderT<=0){ B.intruderT=16+Math.random()*10; if(Math.random()<0.45){ spawnEnemy(ENEMY[INTRUDERS[Math.floor(Math.random()*INTRUDERS.length)]],Math.floor(B.spawned*0.6)); } }
+  B.intruderT-=dt; if(B.intruderT<=0){ B.intruderT=20+Math.random()*12; if(Math.random()<0.4){ spawnEnemy(ENEMY[INTRUDERS[Math.floor(Math.random()*INTRUDERS.length)]],Math.floor(B.spawned*0.6)); } }
   for(const p of B.eproj)stepEproj(p,dt); B.eproj=B.eproj.filter(p=>!p.done);
   for(const u of B.allies)if(!u.dead)stepAlly(u,dt);
   for(const e of B.enemies)if(!e.dead)stepEnemy(e,dt);
@@ -1067,7 +1069,7 @@ function end(win,boss){
   if(win&&B.st.event){ coins=Math.round(300*d.reward*roundReward(B.round)); xp=120*B.round; oasis=1; S.coins+=coins; S.xp+=xp; S.oasis+=oasis; S.eventDay=today(); S.stats.clears++; }
   else if(win){
     const first=!S.cleared[diff].includes(B.i);
-    coins=Math.round((220+130*B.i)*d.reward*roundReward(B.round)); xp=50*(B.i+1)*B.round; fire=first?1:(Math.random()<0.35?1:0);
+    coins=Math.round((260+150*B.i)*d.reward*roundReward(B.round)); xp=60*(B.i+1)*B.round; fire=first?1:(Math.random()<0.6?1:0);
     if(first)S.cleared[diff].push(B.i); S.coins+=coins; S.xp+=xp; S.charcoal+=fire;
     const allDone=STAGES.every((s,k)=>s.locked||s.hidden||S.cleared[diff].includes(k));
     if(allDone&&S.round[diff]<MAX_ROUND){ S.round[diff]++; S.cleared[diff]=[]; roundUp=true; S.charcoal+=2; }
