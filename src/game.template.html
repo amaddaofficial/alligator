@@ -17,9 +17,10 @@ body{margin:0;position:fixed;inset:0;background:#efede6;color:var(--ink);font-fa
 *{box-sizing:border-box}
 [hidden]{display:none!important}
 #frame{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;box-sizing:border-box;padding:max(env(safe-area-inset-top,0px),18px) max(env(safe-area-inset-right,0px),12px) max(env(safe-area-inset-bottom,0px),18px) max(env(safe-area-inset-left,0px),12px)}
+@media (orientation:landscape){#frame{padding-top:max(env(safe-area-inset-top,0px),26px);padding-bottom:max(env(safe-area-inset-bottom,0px),26px)}}
 #stage{position:relative;width:960px;height:540px;flex:none;transform-origin:center center;overflow:hidden;background:var(--paper);border-radius:10px;box-shadow:0 2px 0 var(--line),0 10px 24px rgba(43,43,43,.10);
   background-image:radial-gradient(var(--line) 0.6px, transparent 0.7px);background-size:22px 22px}
-.screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:18px 26px;gap:10px}
+.screen{position:absolute;inset:0;display:flex;flex-direction:column;padding:24px 26px 18px;gap:10px}
 h1,h2,h3{font-family:var(--display);margin:0;text-wrap:balance;line-height:1.1}
 h1{font-size:92px;font-weight:700;letter-spacing:-1px}
 h2{font-size:38px;font-weight:700;white-space:nowrap}
@@ -107,7 +108,7 @@ p{margin:0;line-height:1.35}
 .card.locked img{filter:grayscale(1)}
 .lvb{font-family:var(--display);font-weight:700;font-size:13px;line-height:1;border:2px solid var(--coin);background:#fff6e4;color:var(--ink);border-radius:8px;padding:3px 6px;cursor:pointer;margin-top:2px}
 .lvb[disabled]{opacity:.45;border-color:var(--line);background:#fff;cursor:default}
-#cannon{position:absolute;left:50%;top:10px;transform:translateX(-50%);pointer-events:auto}
+#cannon{position:absolute;left:50%;top:16px;transform:translateX(-50%);pointer-events:auto}
 #cannon .btn{position:relative;overflow:hidden;font-size:20px;padding:8px 18px;background:#fff}
 #cannon .btn .fill{position:absolute;left:0;top:0;bottom:0;width:var(--g,0%);background:#fdeae1;z-index:0}
 #cannon .btn .fill.full{background:#f9c9a9}
@@ -166,7 +167,7 @@ p{margin:0;line-height:1.35}
 /* battle */
 #s-battle{padding:0}
 #cv{position:absolute;inset:0;width:960px;height:540px}
-#hud{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:flex-start;padding:10px 14px;pointer-events:none}
+#hud{position:absolute;left:0;right:0;top:0;display:flex;justify-content:space-between;align-items:flex-start;padding:16px 14px;pointer-events:none}
 #hud .btn{pointer-events:auto}
 #hud .money{font-family:var(--display);font-size:30px;font-weight:700;font-variant-numeric:tabular-nums;text-align:right;line-height:1;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
 #hud .money .pill{display:inline-flex;align-items:center;gap:8px;background:#fff;border:2.5px solid var(--ink);border-radius:14px 12px 16px 10px / 12px 16px 10px 14px;padding:4px 14px;box-shadow:3px 3px 0 var(--line)}
@@ -191,7 +192,7 @@ p{margin:0;line-height:1.35}
 /* boss fight */
 #s-boss{padding:0}
 #bcv{position:absolute;inset:0;width:960px;height:540px}
-#bhud{position:absolute;left:0;right:0;top:0;display:flex;justify-content:flex-end;padding:10px 14px;pointer-events:none}
+#bhud{position:absolute;left:0;right:0;top:0;display:flex;justify-content:flex-end;padding:16px 14px;pointer-events:none}
 #bhud .btn{pointer-events:auto}
 #bctl{position:absolute;left:0;right:0;bottom:0;height:110px;display:flex;justify-content:space-between;align-items:center;padding:8px 18px;pointer-events:none}
 #bctl .grp{display:flex;gap:12px;pointer-events:auto}
@@ -1640,8 +1641,8 @@ function bRender(){
   const saveB=B; B={fx:BF.fx,proj:[]}; drawFx(); B=saveB;
   // HUD: hearts left, boss bar centre (the 후퇴 button sits at the right)
   ctx.setTransform(2,0,0,2,0,0);
-  for(let i=0;i<p.max;i++)drawHeart(26+i*30,18,22,i<p.hearts);
-  const bw=340,bx=W/2-bw/2,by=16; ctx.fillStyle='#fff'; ctx.fillRect(bx,by,bw,16); pencil(2.5); ctx.strokeStyle='#2b2b2b'; ctx.strokeRect(bx,by,bw,16);
+  for(let i=0;i<p.max;i++)drawHeart(26+i*30,24,22,i<p.hearts);
+  const bw=340,bx=W/2-bw/2,by=22; ctx.fillStyle='#fff'; ctx.fillRect(bx,by,bw,16); pencil(2.5); ctx.strokeStyle='#2b2b2b'; ctx.strokeRect(bx,by,bw,16);
   ctx.fillStyle=BF.st.color; ctx.fillRect(bx+2,by+2,(bw-4)*(b.hp/b.max),12);
   ctx.fillStyle='#2b2b2b'; ctx.font='bold 18px Gaegu, sans-serif'; ctx.textAlign='center'; ctx.fillText(`${BF.name}  ${b.hp}/${b.max}${b.rage?' · 분노':''}`,W/2,by+36);
   $('skill-cd').style.setProperty('--p',(BF.sk.cd/BF.sk.max*100)+'%');
