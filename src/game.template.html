@@ -180,7 +180,23 @@ p{margin:0;line-height:1.35}
 .key:focus-visible{outline:3px solid var(--water);outline-offset:2px}
 
 /* result */
-#s-result{align-items:center;justify-content:center;background:rgba(251,250,245,.92);text-align:center;gap:10px}
+#s-result{align-items:center;justify-content:flex-start;background:rgba(251,250,245,.94);text-align:center;gap:6px;padding-top:14px}
+#s-result h1{font-size:54px}
+#s-result #res-sub{font-size:19px;max-width:40em}
+.board{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;width:100%;max-width:860px}
+.stat{background:#fff;border:2.5px solid var(--ink);border-radius:12px 10px 14px 10px / 10px 14px 10px 12px;box-shadow:2px 2px 0 var(--line);padding:6px 4px 5px;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:0}
+.stat .lb{font-size:13px;color:var(--pencil);line-height:1;white-space:nowrap}
+.stat .v{font-family:var(--display);font-weight:700;font-size:26px;line-height:1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.stat .sub{font-size:12px;color:var(--pencil);line-height:1;white-space:nowrap}
+.stat.score{grid-column:span 2;background:#fff6e4}
+.stat.score .v{font-size:40px}
+.stat.score .stars{font-size:22px;color:var(--coin);letter-spacing:2px;line-height:1}
+.lifetime{font-size:14px;color:var(--pencil)}
+.credit{position:absolute;left:0;right:0;bottom:6px;text-align:center;font-family:var(--display);font-size:16px;color:var(--pencil);letter-spacing:1px;pointer-events:none}
+#title-save{font-size:15px;color:var(--pencil);margin-top:2px}
+.savebox{display:flex;flex-direction:column;gap:6px;max-width:520px}
+.savebox textarea{width:100%;height:58px;font-family:ui-monospace,monospace;font-size:12px;border:2px solid var(--line);border-radius:8px;padding:6px;resize:none;background:#fff;color:var(--ink)}
+#s-settings .tools2{display:grid;grid-template-columns:1fr 1fr;gap:14px;flex:1;min-height:0;align-content:start}
 #s-result .rewards{display:flex;gap:26px;font-family:var(--display);font-size:26px;font-variant-numeric:tabular-nums}
 #s-result .rewards span{display:inline-flex;align-items:center;gap:8px}
 </style>
@@ -193,6 +209,8 @@ p{margin:0;line-height:1.35}
     <h1>악어악어 점령</h1>
     <p class="small">연필로 그린 악어들이 토성을 지킨다</p>
     <p class="tap">눌러서 시작</p>
+    <p id="title-save"></p>
+    <p class="credit">made by YH</p>
   </section>
 
   <section class="screen" id="s-diff" hidden>
@@ -282,8 +300,12 @@ p{margin:0;line-height:1.35}
 
   <section class="screen" id="s-settings" hidden>
     <div class="topbar"><h2>설정</h2><button class="btn ghost" data-go="s-diff">돌아가기</button></div>
-    <div class="tool" style="max-width:460px"><h3>데이터 초기화</h3><p class="small">코인, 강화, 점령 기록, 모은 친구가 모두 지워진다.</p><button class="btn" id="reset-btn">초기화</button></div>
-    <p class="notes small">프로토타입 v0.4 · 1~7탄 · 3회차 · 기록은 이 기기의 브라우저에만 저장된다.</p>
+    <div class="tools2">
+      <div class="tool"><h3>저장</h3><p class="small">코인·강화·점령·친구·편성은 이 기기의 브라우저에 자동 저장된다. 다른 기기나 다른 링크로 옮기려면 저장 코드를 복사해서 거기에 붙여넣는다.</p>
+        <div class="savebox"><div class="row"><button class="btn" id="save-copy">저장 코드 복사</button><button class="btn" id="save-load">코드 불러오기</button></div><textarea id="save-code" placeholder="여기에 저장 코드를 붙여넣고 '코드 불러오기'"></textarea><p class="small" id="save-msg"></p></div></div>
+      <div class="tool"><h3>데이터 초기화</h3><p class="small">코인, 강화, 점령 기록, 모은 친구, 점수가 모두 지워진다.</p><button class="btn" id="reset-btn">초기화</button>
+        <p class="notes small" style="margin-top:auto">프로토타입 v0.5 · 1~7탄 · 3회차</p></div>
+    </div>
   </section>
 
   <section class="screen" id="s-pick" hidden>
@@ -317,13 +339,16 @@ p{margin:0;line-height:1.35}
 
   <section class="screen" id="s-result" hidden>
     <h1 id="res-title"></h1>
-    <p id="res-sub" style="font-size:22px"></p>
+    <p id="res-sub"></p>
+    <div class="board" id="res-board"></div>
     <div class="rewards" id="res-rewards"></div>
-    <div class="row" style="justify-content:center;margin-top:10px">
+    <p class="lifetime" id="res-life"></p>
+    <div class="row" style="justify-content:center;margin-top:2px">
       <button class="btn big" id="res-next">다음 성</button>
       <button class="btn" id="res-retry">다시 하기</button>
       <button class="btn" data-go="s-map">지도실</button>
     </div>
+    <p class="credit">made by YH</p>
   </section>
 
 </div>
@@ -477,7 +502,7 @@ const BOSSES={
 // ---------- save ----------
 const KEY='akeo-akeo-v1';
 const startOwned=()=>UNITS.filter(u=>START_TIERS.has(u.tier)).map(u=>u.id);
-const fresh=()=>({coins:0,xp:0,charcoal:1,oasis:0,walletLv:0,hpLv:0,atkLv:0,cleared:{'소':[],'중':[],'대':[]},round:{'소':1,'중':1,'대':1},owned:startOwned(),party:DEFAULT_PARTY.slice()});
+const fresh=()=>({coins:0,xp:0,charcoal:1,oasis:0,walletLv:0,hpLv:0,atkLv:0,cleared:{'소':[],'중':[],'대':[]},round:{'소':1,'중':1,'대':1},owned:startOwned(),party:DEFAULT_PARTY.slice(),stats:{games:0,kills:0,intruders:0,clears:0,bossWins:0,best:0,coins:0}});
 let S=fresh();
 try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);S=Object.assign(fresh(),o);
   // older saves stored names; keep ids only, and always include the starting friends
@@ -485,14 +510,23 @@ try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);S=Object
   S.owned=Array.from(new Set((o.owned||[]).map(x=>byName[x]||x).filter(x=>UBY[x]).concat(startOwned())));
   if(!Array.isArray(o.party)||!o.party.every(x=>UBY[x]))S.party=DEFAULT_PARTY.slice();
   if(!o.round)S.round={'소':1,'중':1,'대':1};
+  S.stats=Object.assign({games:0,kills:0,intruders:0,clears:0,bossWins:0,best:0,coins:0},o.stats||{});
 }}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+function saveCode(){return 'AKEO1.'+btoa(unescape(encodeURIComponent(JSON.stringify(S))));}
+function loadCode(code){
+  code=(code||'').trim(); if(!code.startsWith('AKEO1.'))throw new Error('형식이 다르다');
+  const o=JSON.parse(decodeURIComponent(escape(atob(code.slice(6)))));
+  if(typeof o.coins!=='number'||!o.cleared)throw new Error('내용이 비었다');
+  S=Object.assign(fresh(),o); S.owned=Array.from(new Set((o.owned||[]).filter(x=>UBY[x]).concat(startOwned()))); S.party=(o.party||[]).filter(x=>UBY[x]).slice(0,10); if(!S.party.length)S.party=DEFAULT_PARTY.slice(); S.stats=Object.assign(fresh().stats,o.stats||{}); save();
+}
 
 // ---------- navigation ----------
 const $=id=>document.getElementById(id);
 let diff='소', cur=null, newsFrom='s-diff', partyFrom='s-main';
 function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.hidden=(s.id!==id));
+  if(id==='s-title')renderTitle();
   if(id==='s-diff')renderDiff();
   if(id==='s-main')renderMain();
   if(id==='s-map')renderMap();
@@ -515,6 +549,10 @@ function walletHtml(){
   return `<span><i class="dot coin"></i>코인 ${S.coins}</span><span><i class="dot xp"></i>XP ${S.xp}</span><span><i class="dot fire"></i>숯불 ${S.charcoal}</span><span><i class="dot oasis"></i>오아시스 ${S.oasis}</span>`;
 }
 function tagHtml(u){const c=CLASS(u);return c==='속성'?`<span class="tag elem-${u.elem}">${u.elem}</span>`:`<span class="tag ${c==='범위'?'area':'single'}">${c}</span>`;}
+function renderTitle(){
+  const any=['소','중','대'].some(d=>S.cleared[d].length||S.round[d]>1)||S.coins>0||S.stats.games>0;
+  $('title-save').textContent=any?`이어서 하기 · 코인 ${S.coins} · 친구 ${S.owned.length}명 · 최고 점수 ${S.stats.best}`:'새로 시작 · 기록은 이 기기에 자동 저장된다';
+}
 function renderDiff(){for(const d of ['소','중','대']){$('cl-'+d).textContent=`${S.round[d]}회차 · 점령 ${S.cleared[d].length}/${PLAYABLE}`;}}
 function renderMain(){$('main-diff').textContent=`· ${diff}`;$('wallet-main').innerHTML=walletHtml();$('party-count').textContent=`출전 ${S.party.length}/10 · 친구 ${S.owned.length}명`;}
 
@@ -612,6 +650,15 @@ $('fire-btn').addEventListener('click',()=>{
 });
 
 // ---------- settings ----------
+$('save-copy').addEventListener('click',async()=>{
+  const code=saveCode(); $('save-code').value=code;
+  try{ await navigator.clipboard.writeText(code); $('save-msg').textContent='복사했다. 다른 기기의 설정 화면에 붙여넣으면 된다.'; }
+  catch(e){ $('save-code').focus(); $('save-code').select(); $('save-msg').textContent='아래 코드를 길게 눌러 직접 복사하면 된다.'; }
+});
+$('save-load').addEventListener('click',()=>{
+  try{ loadCode($('save-code').value); $('save-msg').textContent=`불러왔다. 코인 ${S.coins}, 친구 ${S.owned.length}명.`; }
+  catch(e){ $('save-msg').textContent='저장 코드가 아니다. 복사한 코드 전체를 붙여넣자.'; }
+});
 let resetArmed=false;
 $('reset-btn').addEventListener('click',()=>{
   if(!resetArmed){resetArmed=true;$('reset-btn').textContent='정말 지울까? 한 번 더 누르기';setTimeout(()=>{resetArmed=false;$('reset-btn').textContent='초기화';},4000);return;}
@@ -634,7 +681,7 @@ function startBattle(i){
      allies:[],enemies:[],proj:[],eproj:[],fx:[],cd:{},snow:[],
      total:st.count[diff],spawned:0,nextSpawn:1.5,intruderT:14+Math.random()*8,
      baseMax:Math.round((1000+300*S.hpLv)*roundAlly(r)),ebaseMax:Math.round(st.baseHp*d.base*roundEnemy(r)),ebaseShake:0,
-     over:false,atkMul:(1+0.1*S.atkLv)*roundAlly(r),hpMul:roundAlly(r),kills:0,bannerT:0};
+     over:false,atkMul:(1+0.1*S.atkLv)*roundAlly(r),hpMul:roundAlly(r),kills:0,intruders:0,deployed:0,spent:0,earned:0,dmgBase:0,waveT:0,boss:null,bannerT:0};
   $('banner').classList.remove('on');
   B.baseHp=B.baseMax; B.ebaseHp=B.ebaseMax;
   $('stage-label').textContent=`${r}-${st.n} ${st.name} (${diff})`;
@@ -655,10 +702,10 @@ function buildBar(){
   $('wbtn').addEventListener('pointerdown',e=>{e.preventDefault();upWallet();});
 }
 function walletCost(){return 100*(B.wallet+1);}
-function upWallet(){if(B.over||B.wallet>=8)return;const c=walletCost();if(B.money>=c){B.money-=c;B.wallet++;B.income+=8;B.cap+=300;}}
+function upWallet(){if(B.over||B.wallet>=8)return;const c=walletCost();if(B.money>=c){B.money-=c;B.spent+=c;B.wallet++;B.income+=8;B.cap+=300;}}
 function deploy(u){
   if(!B||B.over)return; if((B.cd[u.id]||0)>0||B.money<u.cost)return;
-  B.money-=u.cost; B.cd[u.id]=u.re;
+  B.money-=u.cost; B.cd[u.id]=u.re; B.deployed++; B.spent+=u.cost;
   const hw=u.h*ratioOf(u.spr,1.2)*0.5;
   const hp=Math.round(u.hp*B.hpMul);
   B.allies.push({side:'a',def:u,x:BASE_X-70-Math.random()*20,y:GROUND,hp,max:hp,face:-1,atk:0,hw,h:u.h,flash:0,lunge:0,hop:0,spinT:0,breathT:0,cyc:Math.random()*3,asleep:false,dead:false,fade:1,slow:0});
@@ -676,13 +723,13 @@ function hurt(u,amt,atx,elem){
     if(elem==='불')u.burn=3; else if(elem==='물')u.slow=2.5; else if(elem==='나무')u.root=1.2; else if(elem==='돌')u.stun=0.8; }
   u.hp-=amt; u.flash=0.14;
   B.fx.push({x:atx,y:u.y-u.h*0.55-(u.def.fly||0),t:0.3,kind:'hit',c:elem?ELEMC[elem]:null});
-  if(u.hp<=0){u.dead=true;if(u.side==='e'){B.money=Math.min(B.cap+500,B.money+u.def.bounty);B.kills++;}}
+  if(u.hp<=0){u.dead=true;if(u.side==='e'){B.money=Math.min(B.cap+500,B.money+u.def.bounty);B.earned+=u.def.bounty;B.kills++;if(u.def.intruder)B.intruders++;}}
 }
 const ELEMC={'불':'#d8673a','물':'#4f8fc4','나무':'#5f9b55','돌':'#8f7f66'};
 function hitBase(amt){
-  if(B.over)return; B.ebaseHp-=amt; B.ebaseShake=0.25; B.fx.push({x:EBASE_X+20,y:EBASE_Y,t:0.3,kind:'hit'});
+  if(B.over)return; B.ebaseHp-=amt; B.dmgBase+=Math.min(amt,Math.max(0,B.ebaseHp+amt)); B.ebaseShake=0.25; B.fx.push({x:EBASE_X+20,y:EBASE_Y,t:0.3,kind:'hit'});
   if(B.ebaseHp<=0){ B.ebaseHp=0; B.over=true; for(const e of B.enemies)e.dead=true;
-    banner('토성 격파! 보스가 온다'); setTimeout(()=>{ if(B&&B.over&&!$('s-battle').hidden) openPick(); },1600); }
+    B.waveT=B.t; banner('토성 격파! 보스가 온다'); setTimeout(()=>{ if(B&&B.over&&!$('s-battle').hidden) openPick(); },1600); }
 }
 // can this ally reach that enemy? flying enemies need ranged / flying / tall friends
 function canReach(u,o){ if(u.side!=='a'||!o.def.fly)return true; const d=u.def; return RANGED(d)||d.fly||d.type==='arc'||(u.h+14)>=o.def.fly; }
@@ -744,7 +791,7 @@ function stepAlly(u,dt){
 function stepEnemy(e,dt){
   if(e.falling){e.vy+=1100*dt;e.y+=e.vy*dt;if(e.y>=GROUND){e.y=GROUND;e.falling=false;B.fx.push({x:e.x,y:GROUND,t:0.35,kind:'land'});}return;}
   e.flash=Math.max(0,e.flash-dt); e.lunge=Math.max(0,e.lunge-dt);
-  if(e.burn>0){e.burn-=dt;e.hp-=4*B.atkMul*dt;if(e.hp<=0){e.dead=true;B.money=Math.min(B.cap+500,B.money+e.def.bounty);B.kills++;return;}}
+  if(e.burn>0){e.burn-=dt;e.hp-=4*B.atkMul*dt;if(e.hp<=0){e.dead=true;B.money=Math.min(B.cap+500,B.money+e.def.bounty);B.earned+=e.def.bounty;B.kills++;if(e.def.intruder)B.intruders++;return;}}
   if(e.stun>0){e.stun-=dt;return;}
   const slowed=e.slow>0; if(slowed)e.slow-=dt; const rooted=e.root>0; if(rooted)e.root-=dt;
   const d=e.def, t=nearest(B.allies,e,d.range);
@@ -798,8 +845,15 @@ function update(dt){
   if(B.baseHp<=0){B.baseHp=0;end(false);}
 }
 function end(win,boss){
-  if(!B){ const st=STAGES[cur]; B={st,i:cur,round:S.round[diff],kills:0,over:true}; }   // 보스전으로 바로 들어온 경우
+  if(!B){ const st=STAGES[cur]; B={st,i:cur,round:S.round[diff],kills:0,intruders:0,deployed:0,spent:0,earned:0,dmgBase:0,waveT:0,t:0,over:true}; }   // 보스전으로 바로 들어온 경우
   B.over=true; lastBossLoss=!!(boss&&!win); const d=DIFF[diff]; let coins=0,xp=0,fire=0;
+  if(boss&&BF){ B.boss={win,hits:BF.hits,hearts:BF.p.hearts,max:BF.p.max,t:BF.t,name:BF.name,friend:BF.u.name}; }
+  if(!boss)B.waveT=B.t;
+  // 점수: 처치 10 · 난입 50 · 토성 피해 1/20 · 보스 승리 300 + 남은 하트 60 · 점령 보너스
+  const bz=B.boss||{};
+  let score=B.kills*10+B.intruders*50+Math.round(B.dmgBase/20)+(bz.win?300+bz.hearts*60:(bz.hits||0)*5);
+  if(win)score+=200*B.st.n*B.round;
+  score=Math.round(score*d.reward);
   let roundUp=false;
   if(win){
     const first=!S.cleared[diff].includes(B.i);
@@ -807,15 +861,27 @@ function end(win,boss){
     if(first)S.cleared[diff].push(B.i); S.coins+=coins; S.xp+=xp; S.charcoal+=fire;
     const allDone=STAGES.every((s,k)=>s.locked||S.cleared[diff].includes(k));
     if(allDone&&S.round[diff]<MAX_ROUND){ S.round[diff]++; S.cleared[diff]=[]; roundUp=true; S.charcoal+=2; }
-    save();
-  } else { xp=10*(B.kills>0?1:0); S.xp+=xp; save(); }
+    S.stats.clears++; if(bz.win)S.stats.bossWins++;
+  } else { xp=10*(B.kills>0?1:0)+Math.round(score/50); coins=Math.round(score/10); S.xp+=xp; S.coins+=coins; }
+  S.stats.games++; S.stats.kills+=B.kills; S.stats.intruders+=B.intruders; S.stats.coins+=coins; const isBest=score>S.stats.best; if(isBest)S.stats.best=score;
+  save();
   setTimeout(()=>{
-    $('res-title').textContent=win?'점령 완료!':(boss?'보스에게 졌다':'토성이 무너졌다');
-    const bn=BOSSES[B.st.boss].name;
-    $('res-title').textContent=roundUp?`${B.round}회차 점령 완료!`:$('res-title').textContent;
+    const bn=BOSSES[B.st.boss].name, stars=win?(bz.hearts>=bz.max*0.6?3:bz.hearts>=2?2:1):0;
+    $('res-title').textContent=roundUp?`${B.round}회차 점령 완료!`:(win?'점령 완료!':(boss?'보스에게 졌다':'토성이 무너졌다'));
     $('res-sub').textContent=roundUp?`${S.round[diff]}회차가 열렸다. 친구들이 더 강해졌고(+${Math.round((roundAlly(S.round[diff])-1)*100)}%), 적도 세졌다. 숯불 +2 보너스.`:
-      (win?`${B.round}-${B.st.n} ${B.st.name}을(를) 점령했다. 보스 ${bn}도 쓰러뜨렸다.`:(boss?`${bn}이(가) 너무 셌다. 다른 친구로 다시 도전하자.`:`적 ${B.kills}마리까지 막았다. 편성을 바꾸거나 도구실에서 강화하고 다시 가자.`));
-    $('res-rewards').innerHTML=win?`<span><i class="dot coin"></i>코인 +${coins}</span><span><i class="dot xp"></i>XP +${xp}</span>${fire?`<span><i class="dot fire"></i>숯불 +${fire}</span>`:''}`:`<span><i class="dot xp"></i>XP +${xp}</span>`;
+      (win?`${B.round}-${B.st.n} ${B.st.name}을(를) 점령했다. ${bz.friend||'친구'}가 보스 ${bn}을(를) 쓰러뜨렸다.`:(boss?`${bn}이(가) 너무 셌다. 다른 친구로 다시 도전하자.`:`적 ${B.kills}마리까지 막았다. 편성을 바꾸거나 도구실에서 강화하고 다시 가자.`));
+    const mmss=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
+    const tile=(lb,v,sub,cls)=>`<div class="stat ${cls||''}"><span class="lb">${lb}</span><span class="v">${v}</span>${sub?`<span class="sub">${sub}</span>`:''}</div>`;
+    $('res-board').innerHTML=
+      tile('점수',score.toLocaleString(),isBest?'최고 기록!':`최고 ${S.stats.best.toLocaleString()}`,'score')+
+      tile('처치',B.kills,B.intruders?`난입 ${B.intruders}`:'')+
+      tile('토성 피해',Math.round(B.dmgBase).toLocaleString(),B.ebaseMax?`/ ${B.ebaseMax.toLocaleString()}`:'')+
+      tile('소환',`${B.deployed}명`,`쓴 돈 ${B.spent}`)+
+      tile('시간',mmss((B.waveT||0)+(bz.t||0)),bz.t?`보스전 ${mmss(bz.t)}`:'')+
+      (B.boss?tile('보스',bz.win?'승리':'패배',`맞힘 ${bz.hits} · 하트 ${bz.hearts}/${bz.max}`):tile('보스','—','못 만남'))+
+      (stars?`<div class="stat score"><span class="lb">평가</span><span class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</span><span class="sub">${stars===3?'완벽한 점령':stars===2?'잘했다':'아슬아슬'}</span></div>`:'');
+    $('res-rewards').innerHTML=`<span><i class="dot coin"></i>코인 +${coins}</span><span><i class="dot xp"></i>XP +${xp}</span>${fire?`<span><i class="dot fire"></i>숯불 +${fire}</span>`:''}${win?'':'<span class="small">(진 판도 점수만큼은 챙긴다)</span>'}`;
+    $('res-life').textContent=`누적 · 판 ${S.stats.games} · 처치 ${S.stats.kills} · 점령 ${S.stats.clears} · 보스 승리 ${S.stats.bossWins} · 모은 코인 ${S.stats.coins.toLocaleString()} · 자동 저장됨`;
     const nx=STAGES[B.i+1]; $('res-next').hidden=!(win&&nx&&!nx.locked&&!roundUp);
     $('res-retry').textContent=lastBossLoss?'다른 친구로 다시':'다시 하기';
     show('s-result');
@@ -998,10 +1064,11 @@ function startBoss(u){
   const pimg=IMG[u.spr]; const pr=pimg&&pimg.naturalWidth?pimg.width/pimg.height:1.2;
   const hp=Math.round(BOSS_HP[diff]*(1+0.5*(r-1)));
   const hover=bd.hover||0;
+  if(!B||B.i!==cur||!B.over){ B={st,i:cur,round:r,kills:0,intruders:0,deployed:0,spent:0,earned:0,dmgBase:0,waveT:0,t:0,over:true}; }  // 전투 없이 바로 보스전일 때
   BF={st,u,tr,t:0,img,bd,kind:st.boss,name:bd.name,shake:0,
     p:{x:720,y:GROUND,vy:0,face:-1,hearts:tr.hearts,max:tr.hearts,inv:0,atkT:0,atkCd:0,h:tr.h,hw:tr.h*pr*0.5,kb:0,dead:false},
     boss:{x:250,home:250,y:GROUND-hover,homeY:GROUND-hover,vy:0,h:bh,w:bw,hp,max:hp,pat:null,idle:1.6,flash:0,recoil:0,squash:1,angle:0,fade:1,dead:false,bodyHurt:false,hitH:1,pose:null,lastPat:''},
-    haz:[],fx:[],proj:[],over:false,bannerT:0};
+    haz:[],fx:[],proj:[],over:false,bannerT:0,hits:0};
   bossBanner(`${bd.name} 등장!`);
   show('s-boss'); bLast=performance.now(); cancelAnimationFrame(bRaf); bRaf=requestAnimationFrame(bloop);
 }
@@ -1018,7 +1085,7 @@ function hurtPlayer(fromX){
 }
 function hitBoss(dmg,atx){
   const b=BF.boss; if(b.dead)return;
-  b.hp-=dmg; b.flash=0.16; b.recoil=0.22; BF.fx.push({x:atx,y:b.y-b.h*0.5,t:0.3,kind:'hit'});
+  b.hp-=dmg; b.flash=0.16; b.recoil=0.22; BF.hits++; BF.fx.push({x:atx,y:b.y-b.h*0.5,t:0.3,kind:'hit'});
   if(b.hp<=0){b.hp=0;b.dead=true;b.pat=null;BF.haz=[];bossBanner(`${BF.name} 쓰러짐!`);BF.over=true;setTimeout(()=>end(true,true),1500);}
 }
 // ---- hazards: {shape rect; x,y,w,h; vx,vy,g; arm (seconds until it hurts); life; kind for drawing} ----
