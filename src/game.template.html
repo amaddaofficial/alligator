@@ -134,7 +134,21 @@ p{margin:0;line-height:1.35}
 .elemrule{display:flex;gap:10px;align-items:center;font-family:var(--display);font-size:18px;flex-wrap:wrap}
 
 /* fire (gacha) */
-#s-fire .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center}
+#s-fire .center{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;text-align:center}
+.firebox{position:relative;width:420px;height:190px;display:flex;align-items:flex-end;justify-content:center}
+.firebox svg{position:absolute;left:50%;bottom:0;width:150px;height:150px;transform:translateX(-50%) scale(var(--fs,1));transform-origin:50% 100%;transition:transform .5s cubic-bezier(.2,1.3,.4,1);--fc:#d8673a;--fc2:#e9a23b}
+.firebox svg .f1{fill:var(--fc)}.firebox svg .f2{fill:var(--fc2)}.firebox svg .f3{fill:#fff1a8}
+.firebox img{position:relative;height:150px;max-width:400px;object-fit:contain;transition:filter .4s,opacity .4s}
+.firebox img.sil{filter:brightness(0) contrast(0);opacity:.35}
+.firebox.flare svg{animation:flare .9s ease-in-out infinite alternate}
+@keyframes flare{from{transform:translateX(-50%) scale(var(--fs,1)) skewX(-3deg)}to{transform:translateX(-50%) scale(calc(var(--fs,1)*1.08)) skewX(3deg)}}
+@media (prefers-reduced-motion:reduce){.firebox.flare svg{animation:none}}
+.rare{color:#b06ad4}
+.explore{display:flex;flex-direction:column;gap:6px}
+.explore select{font-family:var(--display);font-size:18px;border:2px solid var(--ink);border-radius:8px;padding:4px 6px;background:#fff;color:var(--ink)}
+.dexhead{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+#s-event .evt{display:grid;grid-template-columns:1.2fr 1fr;gap:14px;flex:1;min-height:0}
+#s-event .evt img{height:110px;max-width:100%;object-fit:contain}
 #s-fire .reveal{font-family:var(--display);font-size:44px;font-weight:700;min-height:1.2em}
 #s-fire img{height:140px;max-width:420px;object-fit:contain}
 .pop{animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
@@ -289,19 +303,25 @@ p{margin:0;line-height:1.35}
       <div class="tool"><h3>지갑</h3><p class="small">전투 시작 돈과 돈 모이는 속도가 오른다</p><div class="lv" id="lv-wallet"></div><button class="btn" data-up="walletLv"></button></div>
       <div class="tool"><h3>HP 강화</h3><p class="small">우리 토성의 HP가 +300</p><div class="lv" id="lv-hp"></div><button class="btn" data-up="hpLv"></button></div>
       <div class="tool"><h3>공격 강화</h3><p class="small">악어 친구들 공격력 +10%</p><div class="lv" id="lv-atk"></div><button class="btn" data-up="atkLv"></button></div>
-      <div class="tool"><h3>탐험</h3><p class="small">한 시간마다 친구가 여행을 떠나 무언가를 주워 오고, 추가 스테이지가 열린다.</p><div class="lv" style="font-size:26px">준비 중</div><button class="btn" disabled>곧 열림</button></div>
+      <div class="tool"><h3>탐험</h3><p class="small">친구 한 명을 보내면 1시간 뒤에 돌아와 주워 온 걸 준다. 게임을 꺼 둬도 시간은 간다.</p><div class="explore" id="explore"></div></div>
     </div>
   </section>
 
   <section class="screen" id="s-event" hidden>
-    <div class="topbar"><h2>이벤트</h2><button class="btn ghost" data-go="s-main">메인화면</button></div>
-    <div class="tool" style="max-width:520px"><h3>드래곤 침공 (준비 중)</h3><p class="notes">구름을 누르면 오는 곳. 그림에 있던 "드래곤 ×5" 이벤트를 여기에 넣을 예정. 이벤트 스테이지를 깨면 오아시스를 준다.</p></div>
+    <div class="topbar"><h2>이벤트 · 구름 위</h2><div class="wallet" id="wallet-event"></div><button class="btn ghost" data-go="s-main">메인화면</button></div>
+    <div class="evt">
+      <div class="tool"><h3>드래곤 침공</h3><p class="notes">하늘에서 드래곤이 떼로 내려온다. 날아다니니 궁수·대포·날 수 있는 친구가 필요하다. 보스는 없고, 드래곤 토성을 부수면 끝. 하루에 한 번, 보상은 <b>오아시스</b>(토성 대포 즉시 충전).</p><img id="evt-img" alt=""><p class="small">※ 드래곤 그림은 아직 드래곤악어로 대신 쓰고 있다. 진짜 드래곤을 그려 주면 바꾼다.</p></div>
+      <div class="tool"><h3>오늘의 침공</h3><p class="small" id="evt-sub"></p><button class="btn big" id="evt-btn">출전</button><p class="small" style="margin-top:auto">난이도는 선택한 소/중/대를 따른다.</p></div>
+    </div>
   </section>
 
   <section class="screen" id="s-fire" hidden>
     <div class="topbar"><h2>캠프파이어</h2><div class="wallet" id="wallet-fire"></div><button class="btn ghost" data-go="s-main">메인화면</button></div>
     <div class="center">
-      <img id="fire-img" alt="">
+      <div class="firebox" id="firebox">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><path class="f1" d="M50 4 C36 28 24 36 28 58 C30 76 40 86 50 86 C62 86 72 76 70 58 C68 40 58 30 50 4 Z"/><path class="f2" d="M50 34 C42 48 38 54 40 66 C42 76 46 80 50 80 C56 80 60 74 58 64 C56 54 52 46 50 34 Z"/><path class="f3" d="M50 58 C47 64 46 68 47 73 C48 77 50 78 50 78 C53 78 54 74 53 70 C52 66 51 62 50 58 Z"/><path d="M14 94 L86 90 M14 90 L86 94" stroke="#2b2b2b" stroke-width="4" stroke-linecap="round" fill="none"/></svg>
+        <img id="fire-img" alt="">
+      </div>
       <div class="reveal" id="fire-reveal">숯불 1개로 새 친구를 부른다</div>
       <p class="small" id="fire-sub">기본 40% · 스크린 28% · 이벤트 15% · 슈퍼 9% · 특별 5% · 레어 3%</p>
       <button class="btn big" id="fire-btn">숯불 넣기</button>
@@ -309,7 +329,7 @@ p{margin:0;line-height:1.35}
   </section>
 
   <section class="screen" id="s-news" hidden>
-    <div class="topbar"><h2>소식 · 악어 도감</h2><button class="btn ghost" id="news-back">돌아가기</button></div>
+    <div class="topbar"><h2>소식 · 악어 도감</h2><div class="dexhead" id="dexhead"></div><button class="btn ghost" id="news-back">돌아가기</button></div>
     <div class="dex" id="dex"></div>
   </section>
 
@@ -501,6 +521,7 @@ const ENEMY={
  pig:     {name:'돼지',    spr:'pig',       hp:200,atk:12,spd:75, range:36, cd:1.0,h:72, flip:false,bounty:120,elem:'나무',intruder:true},
  bird:    {name:'새',      spr:'bird',      hp:90, atk:9, spd:120,range:30, cd:0.9,h:80, flip:false,bounty:110,elem:'나무',intruder:true,fly:110},
  golem:   {name:'돌골램',  spr:'golem',     hp:650,atk:24,spd:22, range:40, cd:2.0,h:88, flip:false,bounty:220,elem:'돌', intruder:true},
+ dragonE: {name:'드래곤',  spr:'dragon',    hp:520,atk:28,spd:42, range:90, cd:1.6,h:110,flip:true, bounty:260,elem:'불', fly:70, tint:'#b04a3a'},
 };
 const INTRUDERS=['pig','bird','golem'];
 const STAGES=[
@@ -512,8 +533,10 @@ const STAGES=[
  {n:6,name:'바다',  enemy:'jelly',  boss:'jelly',  count:{'소':14,'중':28,'대':56}, interval:2.8,baseHp:7200,color:'#2f6fb0',scene:'sea',   elem:'물', sky:'#dfeaf6'},
  {n:7,name:'설원',  enemy:'snowman',boss:'snowman',count:{'소':10,'중':20,'대':40}, interval:3.4,baseHp:8200,color:'#7fa6c9',scene:'snow',  elem:'물', sky:'#f1f4f8'},
  {n:8,name:'겁~나 성',locked:true,color:'#8c8b86',scene:'castle',sky:'#ece9e2'},
+ {n:'E',name:'드래곤 침공',enemy:'dragonE',boss:null,count:{'소':5,'중':8,'대':12},interval:4.2,baseHp:3200,color:'#8c3fb0',scene:'sky',elem:'불',sky:'#ece4f3',event:true,hidden:true},
 ];
-const PLAYABLE=STAGES.filter(s=>!s.locked).length;
+const EVENT_I=STAGES.findIndex(s=>s.event);
+const PLAYABLE=STAGES.filter(s=>!s.locked&&!s.hidden).length;
 const MAX_ROUND=3;
 const roundEnemy=r=>1+1.2*(r-1);   // 2회차 2.2배, 3회차 3.4배
 const roundAlly=r=>1+0.5*(r-1);    // 친구들은 회차마다 +50%
@@ -533,7 +556,7 @@ const BOSSES={
 // ---------- save ----------
 const KEY='akeo-akeo-v1';
 const startOwned=()=>UNITS.filter(u=>START_TIERS.has(u.tier)).map(u=>u.id);
-const fresh=()=>({coins:0,xp:0,charcoal:1,oasis:0,walletLv:0,hpLv:0,atkLv:0,cleared:{'소':[],'중':[],'대':[]},round:{'소':1,'중':1,'대':1},owned:startOwned(),party:DEFAULT_PARTY.slice(),stats:{games:0,kills:0,intruders:0,clears:0,bossWins:0,best:0,coins:0},opt:{sound:true,bgm:true,vib:true},lv:{}});
+const fresh=()=>({coins:0,xp:0,charcoal:1,oasis:0,walletLv:0,hpLv:0,atkLv:0,cleared:{'소':[],'중':[],'대':[]},round:{'소':1,'중':1,'대':1},owned:startOwned(),party:DEFAULT_PARTY.slice(),stats:{games:0,kills:0,intruders:0,clears:0,bossWins:0,best:0,coins:0},opt:{sound:true,bgm:true,vib:true},lv:{},explore:null,eventDay:'',dexClaimed:0,tierClaimed:[]});
 let S=fresh();
 try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);S=Object.assign(fresh(),o);
   // older saves stored names; keep ids only, and always include the starting friends
@@ -543,7 +566,7 @@ try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);S=Object
   if(!o.round)S.round={'소':1,'중':1,'대':1};
   S.stats=Object.assign({games:0,kills:0,intruders:0,clears:0,bossWins:0,best:0,coins:0},o.stats||{});
   S.opt=Object.assign({sound:true,bgm:true,vib:true},o.opt||{});
-  S.lv=o.lv||{};
+  S.lv=o.lv||{}; S.explore=o.explore||null; S.eventDay=o.eventDay||''; S.dexClaimed=o.dexClaimed||0; S.tierClaimed=o.tierClaimed||[];
 }}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function saveCode(){return 'AKEO1.'+btoa(unescape(encodeURIComponent(JSON.stringify(S))));}
@@ -629,6 +652,7 @@ function show(id){
   if(id==='s-party')renderParty();
   if(id==='s-tools')renderTools();
   if(id==='s-settings')renderSettings();
+  if(id==='s-event')renderEvent();
   if(id==='s-news')renderDex();
   if(id==='s-fire')renderFire();
 }
@@ -673,6 +697,7 @@ function renderMap(){
   const cleared=S.cleared[diff]; const hereIdx=Math.min(STAGES.length-1,cleared.length?Math.max(...cleared)+1:0);
   let html=`<path d="M${pts.map(p=>p.join(' ')).join(' L')}" fill="none" stroke="#d3d1c8" stroke-width="4" stroke-dasharray="10 8"/>`;
   STAGES.forEach((st,i)=>{
+    if(st.hidden)return;
     const [x,y]=pts[i]; const done=cleared.includes(i); const cls='node'+(st.locked?' locked':'')+(done?' done':'');
     html+=`<g class="${cls}" data-i="${i}" tabindex="${st.locked?-1:0}" role="button" aria-label="${st.n}번 성 ${st.name}">
       <circle cx="${x}" cy="${y}" r="40" style="${st.locked?'':`fill:${st.sky};stroke:${st.color}`}"/>
@@ -715,8 +740,20 @@ function renderParty(){
 // ---------- tools ----------
 const UPC=lv=>200*(lv+1);
 function renderSettings(){applyOpt();}
+const EXPLORE_MS=60*60*1000;
+let exploreTimer=null;
+function renderExplore(){
+  const box=$('explore'); if(!box)return; const ex=S.explore;
+  if(!ex){ const opts=S.owned.map(id=>UBY[id]).filter(Boolean).map(u=>`<option value="${u.id}">${u.name}</option>`).join('');
+    box.innerHTML=`<select id="ex-sel">${opts}</select><button class="btn" id="ex-go">탐험 보내기</button>`;
+    $('ex-go').addEventListener('click',()=>{S.explore={id:$('ex-sel').value,start:Date.now()};save();sfx('tap');renderExplore();}); return; }
+  const left=ex.start+EXPLORE_MS-Date.now(); const u=UBY[ex.id]||UNITS[0];
+  if(left>0){ const m=Math.floor(left/60000), s=Math.floor(left%60000/1000); box.innerHTML=`<div class="lv" style="font-size:22px">${u.name} 탐험 중</div><div class="lv">${m}:${String(s).padStart(2,'0')}</div><p class="small">돌아오면 코인·숯불, 운 좋으면 오아시스</p>`; return; }
+  box.innerHTML=`<div class="lv" style="font-size:22px">${u.name}가 돌아왔다!</div><button class="btn" id="ex-claim">주워 온 것 받기</button>`;
+  $('ex-claim').addEventListener('click',()=>{ const coins=150*S.round[diff]+Math.floor(Math.random()*120); let msg=`코인 +${coins}`; S.coins+=coins; if(Math.random()<0.6){S.charcoal++;msg+=' · 숯불 +1';} if(Math.random()<0.15){S.oasis++;msg+=' · 오아시스 +1!';} S.explore=null; save(); sfx('win'); vib([40,30,40,30,100]); $('explore').innerHTML=`<div class="lv" style="font-size:20px">${msg}</div><button class="btn" id="ex-again">다시 보내기</button>`; $('wallet-tools').innerHTML=walletHtml(); $('ex-again').addEventListener('click',renderExplore); });
+}
 function renderTools(){
-  $('wallet-tools').innerHTML=walletHtml();
+  $('wallet-tools').innerHTML=walletHtml(); renderExplore(); if(exploreTimer)clearInterval(exploreTimer); exploreTimer=setInterval(()=>{ if($('s-tools').hidden){clearInterval(exploreTimer);return;} if(S.explore&&$('ex-claim')==null)renderExplore(); },1000);
   $('lv-wallet').textContent='Lv.'+S.walletLv; $('lv-hp').textContent='Lv.'+S.hpLv; $('lv-atk').textContent='Lv.'+S.atkLv;
   document.querySelectorAll('[data-up]').forEach(b=>{const k=b.dataset.up;const c=UPC(S[k]);b.textContent=`강화 (코인 ${c})`;b.disabled=S.coins<c||S[k]>=10;});
 }
@@ -724,7 +761,18 @@ document.querySelectorAll('[data-up]').forEach(b=>b.addEventListener('click',()=
 
 // ---------- dex ----------
 const EXTRA_NAMES={'슈퍼스크린':['사격장악어'],'특별':['없음악어','악어맞아? 악어','삭제된악어','이게악어','택배악어(?)']};
+function dexRewards(){
+  const owned=S.owned.filter(id=>UBY[id]&&!UBY[id].noGet).length; const startN=startOwned().length; const milestones=Math.floor(Math.max(0,owned-startN)/10);
+  const tiers=TIER_ORDER.filter(tn=>!START_TIERS.has(tn)&&!S.tierClaimed.includes(tn)&&UNITS.filter(u=>u.tier===tn&&!u.noGet).every(u=>S.owned.includes(u.id)));
+  return {milestone:Math.max(0,milestones-S.dexClaimed),tiers,owned};
+}
+function renderDexHead(){
+  const r=dexRewards(); const fire=r.milestone+r.tiers.length*3;
+  $('dexhead').innerHTML=`<span class="small">친구 ${r.owned}/${UNITS.filter(u=>!u.noGet).length} · 새 친구 10마리마다 숯불 1 · 슈퍼·레어·특별 등급 완성 숯불 3</span>${fire?`<button class="btn" id="dex-claim">보상 받기 (숯불 +${fire})</button>`:''}`;
+  const b=$('dex-claim'); if(b)b.addEventListener('click',()=>{ const r=dexRewards(); S.charcoal+=r.milestone+r.tiers.length*3; S.dexClaimed+=r.milestone; S.tierClaimed.push(...r.tiers); save(); sfx('win'); vib([40,30,80]); renderDexHead(); });
+}
 function renderDex(){
+  renderDexHead();
   let html=`<p class="notes"><b>v0.3.</b> 도화지의 악어 ${UNITS.length}마리가 전부 들어왔다. 각자 생김새·공격·체력이 다르고, 처음에는 기본·스크린·이벤트스크린 친구들을 데리고 시작한다. 나머지는 캠프파이어에서 숯불로 만난다. 회색은 아직 못 만난 친구.</p>
   <div class="elemrule"><span class="tag elem-불">불</span>＞<span class="tag elem-나무">나무</span>＞<span class="tag elem-물">물</span>＞<span class="tag elem-돌">돌</span>＞<span class="tag elem-불">불</span><span class="small">상성이면 2배 · 불=화상, 물=둔화, 나무=묶기, 돌=기절</span></div>`;
   for(const t of TIER_ORDER){
@@ -737,17 +785,30 @@ function renderDex(){
   $('dex').innerHTML=html;
 }
 
+// ---------- event: dragon invasion ----------
+const today=()=>new Date().toISOString().slice(0,10);
+function renderEvent(){
+  $('wallet-event').innerHTML=walletHtml(); $('evt-img').src=SRC.dragon;
+  const done=S.eventDay===today();
+  $('evt-sub').textContent=done?'오늘 침공은 막았다. 내일 다시 온다.':`드래곤 ${STAGES[EVENT_I].count[diff]}마리 · 난이도 ${diff} · 보상 오아시스 1`;
+  $('evt-btn').disabled=done||!S.party.length;
+}
+$('evt-btn').addEventListener('click',()=>{sfx('tap');startBattle(EVENT_I);});
+
 // ---------- campfire gacha ----------
-function renderFire(){$('wallet-fire').innerHTML=walletHtml();$('fire-btn').disabled=S.charcoal<1;$('fire-reveal').textContent=S.charcoal<1?'숯불이 없다. 성을 점령하면 생긴다':'숯불 1개로 새 친구를 부른다';$('fire-reveal').classList.remove('pop');$('fire-img').src=SRC.croc_b;}
+function renderFire(){$('wallet-fire').innerHTML=walletHtml();$('fire-btn').disabled=S.charcoal<1;$('fire-reveal').textContent=S.charcoal<1?'숯불이 없다. 성을 점령하면 생긴다':'숯불 1개로 새 친구를 부른다';$('fire-reveal').classList.remove('pop','rare');$('fire-img').src=SRC.croc_b;$('fire-img').classList.remove('sil');$('firebox').classList.remove('flare');$('firebox').style.setProperty('--fs','1');$('fire-sub').textContent='기본 40% · 스크린 28% · 이벤트 15% · 슈퍼 9% · 특별 5% · 레어 3%';}
 $('fire-btn').addEventListener('click',()=>{
   if(S.charcoal<1)return; S.charcoal--; sfx('gacha'); vib([30,40,30,40,80]);
   let r=Math.random()*100, tier=TIER_ORDER[0];
   for(const t of TIER_ORDER){ if(r<TIER_W[t]){tier=t;break;} r-=TIER_W[t]; }
   const pool=UNITS.filter(u=>u.tier===tier&&!u.noGet); const u=pool[Math.floor(Math.random()*pool.length)];
   const isNew=!S.owned.includes(u.id); if(isNew)S.owned.push(u.id); else S.xp+=20; save();
-  const el=$('fire-reveal'); el.classList.remove('pop'); void el.offsetWidth; el.classList.add('pop');
-  $('fire-img').src=SRC[u.spr]; el.textContent=`${u.name}!`; $('fire-sub').textContent=`${tier} · ${u.tip} · ${isNew?'새 친구다! 편성에 넣어 보자':'이미 있는 친구 (XP +20)'}`;
-  $('wallet-fire').innerHTML=walletHtml(); $('fire-btn').disabled=S.charcoal<1;
+  const rare=tier==='레어스크린'||tier==='특별'||tier==='슈퍼스크린';
+  const el=$('fire-reveal'), box=$('firebox'), img=$('fire-img');
+  $('fire-btn').disabled=true; el.classList.remove('pop','rare'); el.textContent='…'; $('fire-sub').textContent='숯불이 타오른다';
+  img.src=SRC[u.spr]; img.classList.add('sil'); box.classList.add('flare'); box.style.setProperty('--fs',rare?'1.6':'1.25'); box.style.setProperty('--fc',rare?'#b06ad4':'#d8673a'); box.style.setProperty('--fc2',rare?'#d9a9f0':'#e9a23b');
+  vib(rare?[40,40,40,40,40,40,200]:[30,40,30]);
+  setTimeout(()=>{ img.classList.remove('sil'); box.classList.remove('flare'); box.style.setProperty('--fs','1'); el.classList.add('pop'); if(rare)el.classList.add('rare'); el.textContent=`${u.name}!`; $('fire-sub').textContent=`${tier} · ${u.tip} · ${isNew?'새 친구다! 편성에 넣어 보자':'이미 있는 친구 (XP +20)'}`; sfx(rare?'win':'gacha'); $('wallet-fire').innerHTML=walletHtml(); $('fire-btn').disabled=S.charcoal<1; },rare?1600:1100);
 });
 
 // ---------- settings ----------
@@ -789,7 +850,7 @@ function startBattle(i){
      over:false,atkMul:(1+0.1*S.atkLv)*roundAlly(r),hpMul:roundAlly(r),kills:0,intruders:0,deployed:0,spent:0,earned:0,dmgBase:0,waveT:0,boss:null,bannerT:0,stop:0,shake:0,cannon:0,cannonFx:0,cannonShots:0,midDone:false};
   $('banner').classList.remove('on');
   B.baseHp=B.baseMax; B.ebaseHp=B.ebaseMax;
-  $('stage-label').textContent=`${r}-${st.n} ${st.name} (${diff})`;
+  $('stage-label').textContent=st.event?`${st.name} (${diff})`:`${r}-${st.n} ${st.name} (${diff})`;
   buildBar(); show('s-battle'); last=performance.now(); cancelAnimationFrame(raf); raf=requestAnimationFrame(loop);
 }
 function buildBar(){
@@ -851,7 +912,7 @@ const ELEMC={'불':'#d8673a','물':'#4f8fc4','나무':'#5f9b55','돌':'#8f7f66'}
 function hitBase(amt){
   if(B.over)return; B.ebaseHp-=amt; B.dmgBase+=Math.min(amt,Math.max(0,B.ebaseHp+amt)); B.ebaseShake=0.25; B.fx.push({x:EBASE_X+20,y:EBASE_Y,t:0.3,kind:'hit'}); B.fx.push({x:EBASE_X+30,y:EBASE_Y-30,t:0.7,kind:'num',val:Math.round(amt),c:'#2b2b2b',big:amt>=100}); sfx('baseHit',150); if(amt>=100){vib(25);B.shake=Math.max(B.shake,0.2);}
   if(B.ebaseHp<=0){ B.ebaseHp=0; B.over=true; for(const e of B.enemies){e.dead=true;e.dvy=-300;e.dvx=(Math.random()-0.5)*300;} sfx('baseBreak'); vib([80,40,80,40,160]); B.shake=0.8; B.stop=0.08;
-    B.waveT=B.t; banner('토성 격파! 보스가 온다'); setTimeout(()=>{ if(B&&B.over&&!$('s-battle').hidden) openPick(); },1600); }
+    B.waveT=B.t; if(B.st.event){ banner('침공 격퇴!'); setTimeout(()=>{ if(B&&B.over&&!$('s-battle').hidden) end(true,false); },1400); } else { banner('토성 격파! 보스가 온다'); setTimeout(()=>{ if(B&&B.over&&!$('s-battle').hidden) openPick(); },1600); } }
 }
 // can this ally reach that enemy? flying enemies need ranged / flying / tall friends
 function canReach(u,o){ if(u.side!=='a'||!o.def.fly)return true; const d=u.def; return RANGED(d)||d.fly||d.type==='arc'||(u.h+14)>=o.def.fly; }
@@ -984,12 +1045,13 @@ function end(win,boss){
   let score=B.kills*10+B.intruders*50+Math.round(B.dmgBase/20)+(bz.win?300+bz.hearts*60:(bz.hits||0)*5);
   if(win)score+=200*B.st.n*B.round;
   score=Math.round(score*d.reward);
-  let roundUp=false;
-  if(win){
+  let roundUp=false, oasis=0;
+  if(win&&B.st.event){ coins=Math.round(300*d.reward*roundReward(B.round)); xp=120*B.round; oasis=1; S.coins+=coins; S.xp+=xp; S.oasis+=oasis; S.eventDay=today(); S.stats.clears++; }
+  else if(win){
     const first=!S.cleared[diff].includes(B.i);
     coins=Math.round((220+130*B.i)*d.reward*roundReward(B.round)); xp=50*(B.i+1)*B.round; fire=first?1:(Math.random()<0.35?1:0);
     if(first)S.cleared[diff].push(B.i); S.coins+=coins; S.xp+=xp; S.charcoal+=fire;
-    const allDone=STAGES.every((s,k)=>s.locked||S.cleared[diff].includes(k));
+    const allDone=STAGES.every((s,k)=>s.locked||s.hidden||S.cleared[diff].includes(k));
     if(allDone&&S.round[diff]<MAX_ROUND){ S.round[diff]++; S.cleared[diff]=[]; roundUp=true; S.charcoal+=2; }
     S.stats.clears++; if(bz.win)S.stats.bossWins++;
   } else { xp=10*(B.kills>0?1:0)+Math.round(score/50); coins=Math.round(score/10); S.xp+=xp; S.coins+=coins; }
@@ -997,10 +1059,10 @@ function end(win,boss){
   S.stats.games++; S.stats.kills+=B.kills; S.stats.intruders+=B.intruders; S.stats.coins+=coins; const isBest=score>S.stats.best; if(isBest)S.stats.best=score;
   save();
   setTimeout(()=>{
-    const bn=BOSSES[B.st.boss].name, stars=win?(bz.hearts>=bz.max*0.6?3:bz.hearts>=2?2:1):0;
-    $('res-title').textContent=roundUp?`${B.round}회차 점령 완료!`:(win?'점령 완료!':(boss?'보스에게 졌다':'토성이 무너졌다'));
+    const bn=B.st.boss?BOSSES[B.st.boss].name:'', stars=win?(B.st.event?(B.baseHp/B.baseMax>0.6?3:2):(bz.hearts>=bz.max*0.6?3:bz.hearts>=2?2:1)):0;
+    $('res-title').textContent=roundUp?`${B.round}회차 점령 완료!`:(win?(B.st.event?'침공 격퇴!':'점령 완료!'):(boss?'보스에게 졌다':'토성이 무너졌다'));
     $('res-sub').textContent=roundUp?`${S.round[diff]}회차가 열렸다. 친구들이 더 강해졌고(+${Math.round((roundAlly(S.round[diff])-1)*100)}%), 적도 세졌다. 숯불 +2 보너스.`:
-      (win?`${B.round}-${B.st.n} ${B.st.name}을(를) 점령했다. ${bz.friend||'친구'}가 보스 ${bn}을(를) 쓰러뜨렸다.`:(boss?`${bn}이(가) 너무 셌다. 다른 친구로 다시 도전하자.`:`적 ${B.kills}마리까지 막았다. 편성을 바꾸거나 도구실에서 강화하고 다시 가자.`));
+      (win?(B.st.event?`드래곤 ${B.kills}마리를 쫓아냈다. 오아시스를 얻었다.`:`${B.round}-${B.st.n} ${B.st.name}을(를) 점령했다. ${bz.friend||'친구'}가 보스 ${bn}을(를) 쓰러뜨렸다.`):(boss?`${bn}이(가) 너무 셌다. 다른 친구로 다시 도전하자.`:`적 ${B.kills}마리까지 막았다. 편성을 바꾸거나 도구실에서 강화하고 다시 가자.`));
     const mmss=s=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`;
     const tile=(lb,v,sub,cls)=>`<div class="stat ${cls||''}"><span class="lb">${lb}</span><span class="v">${v}</span>${sub?`<span class="sub">${sub}</span>`:''}</div>`;
     $('res-board').innerHTML=
@@ -1009,11 +1071,11 @@ function end(win,boss){
       tile('토성 피해',Math.round(B.dmgBase).toLocaleString(),B.ebaseMax?`/ ${B.ebaseMax.toLocaleString()}`:'')+
       tile('소환',`${B.deployed}명`,`쓴 돈 ${B.spent}${B.cannonShots?` · 대포 ${B.cannonShots}`:''}`)+
       tile('시간',mmss((B.waveT||0)+(bz.t||0)),bz.t?`보스전 ${mmss(bz.t)}`:'')+
-      (B.boss?tile('보스',bz.win?'승리':'패배',`맞힘 ${bz.hits} · 하트 ${bz.hearts}/${bz.max}`):tile('보스','—','못 만남'))+
+      (B.boss?tile('보스',bz.win?'승리':'패배',`맞힘 ${bz.hits} · 하트 ${bz.hearts}/${bz.max}`):tile('보스','—',B.st.event?'이벤트':'못 만남'))+
       (stars?`<div class="stat score"><span class="lb">평가</span><span class="stars">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</span><span class="sub">${stars===3?'완벽한 점령':stars===2?'잘했다':'아슬아슬'}</span></div>`:'');
-    $('res-rewards').innerHTML=`<span><i class="dot coin"></i>코인 +${coins}</span><span><i class="dot xp"></i>XP +${xp}</span>${fire?`<span><i class="dot fire"></i>숯불 +${fire}</span>`:''}${win?'':'<span class="small">(진 판도 점수만큼은 챙긴다)</span>'}`;
+    $('res-rewards').innerHTML=`<span><i class="dot coin"></i>코인 +${coins}</span><span><i class="dot xp"></i>XP +${xp}</span>${fire?`<span><i class="dot fire"></i>숯불 +${fire}</span>`:''}${oasis?`<span><i class="dot oasis"></i>오아시스 +${oasis}</span>`:''}${win?'':'<span class="small">(진 판도 점수만큼은 챙긴다)</span>'}`;
     $('res-life').textContent=`누적 · 판 ${S.stats.games} · 처치 ${S.stats.kills} · 점령 ${S.stats.clears} · 보스 승리 ${S.stats.bossWins} · 모은 코인 ${S.stats.coins.toLocaleString()} · 자동 저장됨`;
-    const nx=STAGES[B.i+1]; $('res-next').hidden=!(win&&nx&&!nx.locked&&!roundUp);
+    const nx=STAGES[B.i+1]; $('res-next').hidden=!(win&&nx&&!nx.locked&&!nx.hidden&&!roundUp&&!B.st.event);
     $('res-retry').textContent=lastBossLoss?'다른 친구로 다시':'다시 하기';
     show('s-result');
   },900);
@@ -1083,6 +1145,10 @@ function drawGround(st,tm){
     for(let x=-60;x<W;x+=300){ ctx.beginPath(); ctx.moveTo(x,GROUND); ctx.quadraticCurveTo(x+150,GROUND-60,x+300,GROUND); ctx.stroke(); }  // drifts
     pencil(2.5); for(let x=120;x<W;x+=260){ for(let k=0;k<3;k++){ const yy=GROUND-k*34, ww=52-k*12; ctx.beginPath(); ctx.moveTo(x-ww,yy); ctx.lineTo(x,yy-52); ctx.lineTo(x+ww,yy); ctx.closePath(); ctx.stroke(); } }  // pines
     pencil(1.5); for(let k=0;k<26;k++){ const x=(k*137+tm*18)%W, y=(k*89+tm*45)%GROUND; ctx.beginPath(); ctx.moveTo(x-4,y); ctx.lineTo(x+4,y); ctx.moveTo(x,y-4); ctx.lineTo(x,y+4); ctx.stroke(); }  // falling snow
+  } else if(sc==='sky'){
+    ctx.fillStyle='#e8e2f1'; ctx.fillRect(0,GROUND+4,W,36);
+    pencil(2.5); for(let k=0;k<5;k++){ const x=(k*230+tm*12)%(W+200)-100, y=90+(k%3)*70; ctx.beginPath(); ctx.moveTo(x,y); ctx.quadraticCurveTo(x+20,y-34,x+60,y-20); ctx.quadraticCurveTo(x+90,y-44,x+120,y-20); ctx.quadraticCurveTo(x+150,y-26,x+150,y); ctx.closePath(); ctx.stroke(); }
+    for(let x=0;x<W;x+=120){ ctx.beginPath(); ctx.moveTo(x,GROUND); ctx.quadraticCurveTo(x+30,GROUND-30,x+60,GROUND); ctx.quadraticCurveTo(x+90,GROUND-30,x+120,GROUND); ctx.stroke(); }
   } else {
     ctx.fillStyle='#e3e1da'; ctx.fillRect(0,GROUND+4,W,36);
   }
@@ -1098,7 +1164,8 @@ function drawSaturn(x,y,r,fill,colored){
   ctx.restore();
 }
 function drawUnit(u){
-  const d=u.def, img=IMG[u.side==='a'?d.spr:d.spr]; if(!img||!img.complete||!img.naturalWidth)return;
+  const d=u.def, base0=IMG[d.spr]; if(!base0||!base0.complete||!base0.naturalWidth)return;
+  const img=d.tint?tinted(d.spr,d.tint,0.45):base0;
   const h=u.h, w=h*img.width/img.height;
   const nativeRight=u.side==='a'?false:!d.flip;          // every pencil croc was drawn facing left
   const flip=(u.face>0)!==nativeRight;
@@ -1529,7 +1596,7 @@ function fit(){
 window.addEventListener('resize',fit); if(window.visualViewport)window.visualViewport.addEventListener('resize',fit); fit(); setTimeout(fit,300);
 // 점검용 훅: 콘솔에서 __akeo.boss(2) 하면 3번 성 보스전으로 바로 간다
 applyOpt();
-window.__akeo={boss:(i,d)=>{if(d)diff=d;cur=i;openPick();},battle:(i,d)=>{if(d)diff=d;startBattle(i);},state:()=>({B,BF,S})};
+window.__akeo={boss:(i,d)=>{if(d)diff=d;cur=i;openPick();},battle:(i,d)=>{if(d)diff=d;startBattle(i);},state:()=>({B,BF,S}),hit:a=>hitBase(a)};
 show('s-title');
 })();
 </script>
