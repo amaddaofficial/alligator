@@ -5,7 +5,9 @@
 
 ## 바로 플레이
 
-`index.html`을 브라우저로 열면 끝. GitHub Pages를 켜면 링크로도 열 수 있다.
+`index.html`을 브라우저로 열면 끝. GitHub Pages가 켜져 있으면 https://amaddaofficial.github.io/alligator/ 에서 바로 열린다.
+
+링크를 카카오톡 등에 보내면 `og.png`(아이 손글씨 제목 + 악어)와 제목이 미리보기로 뜬다. 홈 화면에 추가하면 `icon.png`가 아이콘이 된다.
 
 ## 구조
 
@@ -14,7 +16,8 @@ index.html              빌드 결과물 (그림이 전부 안에 들어 있어 
 src/game.template.html  소스. 그림 자리에 __SPRITES__ 표시만 있다
 assets/sprites/*.png    악어 친구 76마리 + 일반 적 10종 (연필 그림을 사진에서 잘라낸 것)
 assets/bosses/*.png     보스 7종 (빨간 눈)
-tools/build.py          assets를 템플릿에 심어 index.html을 만든다
+tools/build.py          assets를 템플릿에 심어 index.html을 만든다 (--bare OUT: 아티팩트용 본문만)
+og.png / icon.png       링크 미리보기 그림, 홈 화면 아이콘
 ```
 
 소스를 고친 뒤에는 `python3 tools/build.py` 한 번.
