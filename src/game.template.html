@@ -218,6 +218,15 @@ p{margin:0;line-height:1.35}
 .lifetime{font-size:14px;color:var(--pencil)}
 .credit{position:absolute;left:0;right:0;bottom:6px;text-align:center;font-family:var(--display);font-size:16px;color:var(--pencil);letter-spacing:1px;pointer-events:none}
 #title-save{font-size:15px;color:var(--pencil);margin-top:2px}
+.hint{position:absolute;z-index:5;background:#fff;border:2.5px solid var(--ink);border-radius:14px 12px 16px 10px / 12px 16px 10px 14px;box-shadow:3px 3px 0 var(--line);padding:8px 14px;font-family:var(--display);font-size:20px;font-weight:700;pointer-events:none;animation:bob 1s ease-in-out infinite alternate}
+.hint::after{content:"";position:absolute;left:50%;bottom:-14px;width:0;height:0;border:12px solid transparent;border-top-color:var(--ink);border-bottom:0;transform:translateX(-50%)}
+.hint.up::after{bottom:auto;top:-14px;border-top:0;border-bottom:12px solid var(--ink)}
+@keyframes bob{from{transform:translateY(0)}to{transform:translateY(-6px)}}
+@media (prefers-reduced-motion:reduce){.hint{animation:none}}
+#share-modal{position:absolute;inset:0;background:rgba(43,43,43,.55);display:flex;align-items:center;justify-content:center;z-index:20;gap:14px}
+#share-modal img{height:92%;max-width:60%;object-fit:contain;border:3px solid #fff;box-shadow:0 8px 30px rgba(0,0,0,.4);background:#fff}
+#share-modal .col{display:flex;flex-direction:column;gap:10px;max-width:280px}
+#share-modal .col p{color:#fff;font-size:16px}
 .savebox{display:flex;flex-direction:column;gap:6px;max-width:520px}
 .savebox textarea{width:100%;height:58px;font-family:ui-monospace,monospace;font-size:12px;border:2px solid var(--line);border-radius:8px;padding:6px;resize:none;background:#fff;color:var(--ink)}
 #s-settings .tools2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex:1;min-height:0;align-content:start}
@@ -359,6 +368,7 @@ p{margin:0;line-height:1.35}
     </div>
     <div id="cannon"><button class="btn" id="cannon-btn"><span class="fill" id="cannon-fill"></span><span class="t">토성 대포<span class="sub" id="cannon-sub"></span></span></button></div>
     <div id="banner"></div>
+    <div class="hint" id="hint-w" hidden></div>
     <div id="bar"></div>
   </section>
 
@@ -366,6 +376,7 @@ p{margin:0;line-height:1.35}
     <canvas id="bcv" width="1920" height="1080"></canvas>
     <div id="bhud"><div class="row"><button class="btn ghost" id="mute-b">소리</button><button class="btn ghost" id="bretreat">후퇴</button></div></div>
     <div id="bbanner"></div>
+    <div class="hint" id="hint-b" hidden></div>
     <div id="bctl">
       <div class="grp">
         <button class="key" data-k="left" aria-label="왼쪽"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M27 5 L9 20 L27 35 Z"/></svg><span class="kb">A</span></button>
@@ -385,8 +396,10 @@ p{margin:0;line-height:1.35}
       <button class="btn big" id="res-next">다음 성</button>
       <button class="btn" id="res-retry">다시 하기</button>
       <button class="btn" data-go="s-map">지도실</button>
+      <button class="btn" id="res-share">자랑하기</button>
     </div>
     <p class="credit">made by YH</p>
+    <div id="share-modal" hidden><img id="share-img" alt="자랑 카드"><div class="col"><p id="share-msg">이미지를 길게 누르면 저장할 수 있다.</p><button class="btn" id="share-send">카톡 등으로 보내기</button><button class="btn ghost" id="share-close">닫기</button></div></div>
   </section>
 
 </div>
@@ -556,7 +569,7 @@ const BOSSES={
 // ---------- save ----------
 const KEY='akeo-akeo-v1';
 const startOwned=()=>UNITS.filter(u=>START_TIERS.has(u.tier)).map(u=>u.id);
-const fresh=()=>({coins:0,xp:0,charcoal:1,oasis:0,walletLv:0,hpLv:0,atkLv:0,cleared:{'소':[],'중':[],'대':[]},round:{'소':1,'중':1,'대':1},owned:startOwned(),party:DEFAULT_PARTY.slice(),stats:{games:0,kills:0,intruders:0,clears:0,bossWins:0,best:0,coins:0},opt:{sound:true,bgm:true,vib:true},lv:{},explore:null,eventDay:'',dexClaimed:0,tierClaimed:[]});
+const fresh=()=>({coins:0,xp:0,charcoal:1,oasis:0,walletLv:0,hpLv:0,atkLv:0,cleared:{'소':[],'중':[],'대':[]},round:{'소':1,'중':1,'대':1},owned:startOwned(),party:DEFAULT_PARTY.slice(),stats:{games:0,kills:0,intruders:0,clears:0,bossWins:0,best:0,coins:0},opt:{sound:true,bgm:true,vib:true},lv:{},explore:null,eventDay:'',dexClaimed:0,tierClaimed:[],tut:{}});
 let S=fresh();
 try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);S=Object.assign(fresh(),o);
   // older saves stored names; keep ids only, and always include the starting friends
@@ -566,7 +579,7 @@ try{const raw=localStorage.getItem(KEY);if(raw){const o=JSON.parse(raw);S=Object
   if(!o.round)S.round={'소':1,'중':1,'대':1};
   S.stats=Object.assign({games:0,kills:0,intruders:0,clears:0,bossWins:0,best:0,coins:0},o.stats||{});
   S.opt=Object.assign({sound:true,bgm:true,vib:true},o.opt||{});
-  S.lv=o.lv||{}; S.explore=o.explore||null; S.eventDay=o.eventDay||''; S.dexClaimed=o.dexClaimed||0; S.tierClaimed=o.tierClaimed||[];
+  S.lv=o.lv||{}; S.explore=o.explore||null; S.eventDay=o.eventDay||''; S.dexClaimed=o.dexClaimed||0; S.tierClaimed=o.tierClaimed||[]; S.tut=o.tut||{};
 }}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
 function saveCode(){return 'AKEO1.'+btoa(unescape(encodeURIComponent(JSON.stringify(S))));}
@@ -852,7 +865,10 @@ function startBattle(i){
   B.baseHp=B.baseMax; B.ebaseHp=B.ebaseMax;
   $('stage-label').textContent=st.event?`${st.name} (${diff})`:`${r}-${st.n} ${st.name} (${diff})`;
   buildBar(); show('s-battle'); last=performance.now(); cancelAnimationFrame(raf); raf=requestAnimationFrame(loop);
+  hintW(S.tut.deploy?null:'아래 친구를 눌러 소환!',120,398);
 }
+function hintW(text,x,y,up){ const h=$('hint-w'); if(!text){h.hidden=true;return;} h.textContent=text; h.hidden=false; h.classList.toggle('up',!!up); h.style.left=x+'px'; h.style.top=y+'px'; h.style.transform=''; }
+function hintB(text,x,y,up){ const h=$('hint-b'); if(!text){h.hidden=true;return;} h.textContent=text; h.hidden=false; h.classList.toggle('up',!!up); h.style.left=x+'px'; h.style.top=y+'px'; }
 function buildBar(){
   const bar=$('bar'); let html=`<button class="ubtn wallet" id="wbtn"><span class="nm">지갑 Lv.<b id="wlv">1</b></span><span class="cost" id="wcost"></span></button>`;
   for(const u of B.party){
@@ -871,7 +887,7 @@ function walletCost(){return 100*(B.wallet+1);}
 function fireCannon(){
   if(!B||B.over)return;
   if(B.cannon<1){ if(S.oasis>0){S.oasis--;save();banner('오아시스! 대포 충전');} else {sfx('tap');return;} }
-  B.cannon=0; B.cannonFx=0.7; B.cannonShots++; sfx('cannon'); vib([60,40,120]); B.shake=0.5; B.stop=0.06;
+  B.cannon=0; B.cannonFx=0.7; B.cannonShots++; if(!S.tut.cannon){S.tut.cannon=true;save();} hintW(null); sfx('cannon'); vib([60,40,120]); B.shake=0.5; B.stop=0.06;
   const dmg=Math.round(150*B.atkMul);
   for(const e of B.enemies){ if(e.dead||e.falling)continue; hurt(e,dmg,e.x); if(!e.dead){ e.x=Math.max(ATTACK_X-60,e.x-170); e.stun=Math.max(e.stun,1.0); } }
   hitBase(Math.round(dmg*0.6));
@@ -881,6 +897,7 @@ function upWallet(){if(B.over||B.wallet>=8)return;const c=walletCost();if(B.mone
 function deploy(u){
   if(!B||B.over)return; if((B.cd[u.id]||0)>0||B.money<u.cost)return;
   B.money-=u.cost; B.cd[u.id]=u.re; B.deployed++; B.spent+=u.cost; sfx('spawn'); vib(12);
+  if(!S.tut.deploy){ S.tut.deploy=true; save(); hintW('친구들은 왼쪽 끝 적 토성을 부수러 간다. 지갑 Lv.을 올리면 돈이 빨리 모인다',14,398); setTimeout(()=>{ if(B&&!B.over)hintW(S.tut.cannon?null:'토성 대포가 차면 눌러서 적을 밀어내자',290,70,true); },6000); setTimeout(()=>{ if(!S.tut.cannon){S.tut.cannon=true;save();} hintW(null); },13000); }
   const hw=u.h*ratioOf(u.spr,1.2)*0.5;
   const hp=Math.round(u.hp*B.hpMul*lvMul(u.id));
   B.allies.push({side:'a',def:u,lvm:lvMul(u.id),x:BASE_X-70-Math.random()*20,y:GROUND,hp,max:hp,face:-1,atk:0,hw,h:u.h,flash:0,lunge:0,hop:0,spinT:0,breathT:0,cyc:Math.random()*3,asleep:false,dead:false,fade:1,slow:0,pop:0.3,dvx:0,dvy:0,rot:0});
@@ -1081,6 +1098,29 @@ function end(win,boss){
   },900);
 }
 $('res-next').addEventListener('click',()=>{sfx('tap');startBattle(cur+1);});
+// 자랑 카드: 결과를 한 장 그림으로 만들어 보낸다
+let shareBlob=null;
+function roundRect(c,x,y,w,h,r){c.beginPath();c.moveTo(x+r,y);c.arcTo(x+w,y,x+w,y+h,r);c.arcTo(x+w,y+h,x,y+h,r);c.arcTo(x,y+h,x,y,r);c.arcTo(x,y,x+w,y,r);c.closePath();}
+function buildShareCard(){
+  const c=document.createElement('canvas'); c.width=1080; c.height=1350; const x=c.getContext('2d');
+  x.fillStyle='#fbfaf5'; x.fillRect(0,0,1080,1350); x.fillStyle='#d3d1c8'; for(let i=0;i<1080;i+=30)for(let j=0;j<1350;j+=30){x.beginPath();x.arc(i,j,1.6,0,Math.PI*2);x.fill();}
+  const bz=B.boss||{}, win=$('res-title').textContent.includes('완료')||$('res-title').textContent.includes('격퇴');
+  const th=IMG.title_hand; if(th&&th.naturalWidth){ const h=300, w=h*th.width/th.height; x.drawImage(th,540-w/2,60,w,h); }
+  const u=bz.friend?UNITS.find(q=>q.name===bz.friend):UBY[S.party[0]]||UNITS[0]; const fi=IMG[u.spr];
+  if(fi&&fi.naturalWidth){ const h=360, w=h*fi.width/fi.height; x.drawImage(fi,540-w/2,400,w,h); }
+  x.strokeStyle='#8c8b86'; x.lineWidth=5; x.beginPath(); x.moveTo(60,770); x.lineTo(1020,770); x.stroke();
+  x.fillStyle='#2b2b2b'; x.textAlign='center'; x.font='bold 64px Gaegu, sans-serif';
+  x.fillText(`${B.st.event?B.st.name:`${B.round}-${B.st.n} ${B.st.name}`} ${win?'점령!':'도전'}`,540,850);
+  x.font='bold 150px Gaegu, sans-serif'; x.fillText(($('res-board').querySelector('.score .v')||{}).textContent||'0',540,1010);
+  x.font='32px Gaegu, sans-serif'; x.fillStyle='#8c8b86'; x.fillText('점수',540,1050);
+  const stars=($('res-board').querySelector('.stars')||{}).textContent||''; if(stars){x.fillStyle='#d9a441';x.font='bold 70px sans-serif';x.fillText(stars,540,1135);}
+  x.fillStyle='#2b2b2b'; x.font='bold 36px Gaegu, sans-serif'; x.fillText(`${u.name} · 처치 ${B.kills}${bz.name?` · ${bz.name} ${bz.win?'격파':'도전'}`:''}`,540,1200);
+  x.fillStyle='#8c8b86'; x.font='30px Gaegu, sans-serif'; x.fillText('악어악어 점령 · made by YH',540,1290);
+  return c;
+}
+$('res-share').addEventListener('click',()=>{ sfx('tap'); try{ const c=buildShareCard(); c.toBlob(bl=>{ shareBlob=bl; $('share-img').src=URL.createObjectURL(bl); $('share-modal').hidden=false; const can=!!(navigator.share&&navigator.canShare&&navigator.canShare({files:[new File([bl],'a.png',{type:'image/png'})]})); $('share-send').hidden=!can; $('share-msg').textContent=can?'보내기를 누르면 카톡·문자로 바로 간다. 그림을 길게 누르면 저장.':'그림을 길게 눌러 저장한 뒤 보내면 된다.'; },'image/png'); }catch(e){ $('share-msg').textContent='카드를 만들지 못했다.'; } });
+$('share-close').addEventListener('click',()=>{$('share-modal').hidden=true;});
+$('share-send').addEventListener('click',async()=>{ if(!shareBlob)return; try{ const f=new File([shareBlob],'akeo-akeo.png',{type:'image/png'}); await navigator.share({files:[f],title:'악어악어 점령',text:'악어악어 점령 결과!'}); }catch(e){} });
 $('res-retry').textContent='다시 하기';
 $('res-retry').addEventListener('click',()=>{sfx('tap');if(lastBossLoss)openPick();else startBattle(cur);});
 $('retreat').addEventListener('click',()=>{sfx('tap');if(B){B.over=true;}show('s-map');});
@@ -1277,6 +1317,7 @@ function startBoss(u){
     haz:[],fx:[],proj:[],over:false,bannerT:0,hits:0,stop:0,sk:{cd:0,max:8,t:0},rainT:0};
   $('skill-btn').firstChild.textContent=tr.skill.n;
   bossBanner(`${bd.name} 등장!`); sfx('danger'); vib([50,50,50,50,120]);
+  if(!S.tut.boss){ S.tut.boss=true; save(); hintB('◀ ▶ 이동 · 점프로 피하고 · 공격! 주황 글씨가 뜨면 피할 준비',300,380); setTimeout(()=>hintB(null),6000); } else hintB(null);
   show('s-boss'); bLast=performance.now(); cancelAnimationFrame(bRaf); bRaf=requestAnimationFrame(bloop);
 }
 function bossBanner(t){$('bbanner').textContent=t;$('bbanner').classList.add('on');BF.bannerT=1.8;}
