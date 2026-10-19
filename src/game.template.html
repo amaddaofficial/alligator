@@ -99,7 +99,9 @@ p{margin:0;line-height:1.35}
 .slot img{height:44px;max-width:90%;object-fit:contain}
 .slot .nm{font-family:var(--display);font-weight:700;font-size:15px;line-height:1.05;white-space:normal;text-align:center;max-width:100%;word-break:keep-all}
 .slot .empty{font-family:var(--display);font-size:16px;color:var(--pencil)}
-.roster{flex:1;min-height:0;overflow:auto;display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:max-content;gap:8px;align-content:start;padding:4px 6px 4px 2px;touch-action:pan-y}
+.roster{flex:1;min-height:0;overflow:auto;display:grid;grid-template-columns:repeat(6,1fr);grid-auto-rows:max-content;gap:8px;align-content:start;padding:4px 6px 4px 2px;touch-action:pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}
+.roster .card{touch-action:pan-y}
+.lvb{touch-action:manipulation}
 .card{position:relative;background:#fff;border:2.5px solid var(--ink);border-radius:12px 10px 14px 10px / 10px 14px 10px 12px;box-shadow:2px 2px 0 var(--line);padding:6px 4px 5px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;min-height:132px}
 .card:active{transform:translate(1px,1px)}
 .card img{height:50px;max-width:94%;object-fit:contain}
@@ -587,7 +589,8 @@ const STAGES=[
 const EVENT_I=STAGES.findIndex(s=>s.event);
 const PLAYABLE=STAGES.filter(s=>!s.locked&&!s.hidden).length;
 const MAX_ROUND=3;
-const roundEnemy=r=>1+0.9*(r-1);   // 2회차 1.9배, 3회차 2.8배
+const roundEnemy=r=>(1+0.9*(r-1))*(r>1?1.1:1);   // 2회차 2.09배, 3회차 3.08배 (2회차부터 10% 더)
+const roundCount=r=>r>1?1.1:1;                     // 2회차부터 적 수도 10% 더
 const roundAlly=r=>1+0.5*(r-1);    // 친구들은 회차마다 +50%
 const roundReward=r=>1+0.8*(r-1);
 const RAMP=1.2;
@@ -780,20 +783,32 @@ function cardHtml(u,extraCls){
   const lvb=(extraCls||'').includes('locked')?'':`<button class="lvb" data-lv="${u.id}" ${lv>=MAX_LV||S.xp<lvCost(u.id)?'disabled':''}>${lv>=MAX_LV?'MAX':`Lv.${lv} ▲ ${lvCost(u.id)}XP`}</button>`;
   return `<div class="card ${extraCls||''}" data-u="${u.id}" role="button" tabindex="0"><img alt="" src="${SRC[u.spr]}"><span class="nm">${u.name}${lv?` <span class="small">Lv.${lv}</span>`:''}</span><span class="st">${u.cost}돈 · HP ${Math.round(u.hp*m)}</span><span class="st">공격 ${Math.round(u.atk*m)} · ${u.tip}</span>${tagHtml(u)}${lvb}</div>`;
 }
-function renderParty(){
+// 편성 줄(위)만 다시 그리고, 아래 목록은 제자리에서 표시만 바꾼다 — 목록을 통째로 다시 그리면 스크롤이 맨 위로 튀기 때문
+function renderPartyRow(){
   const row=$('party-row'); let h='';
   for(let i=0;i<10;i++){ const id=S.party[i]; const u=id&&UBY[id];
     h+=u?`<div class="slot filled" data-u="${u.id}" role="button" tabindex="0"><img alt="" src="${SRC[u.spr]}"><span class="nm">${u.name}</span></div>`:`<div class="slot"><span class="empty">빈 자리</span></div>`; }
   row.innerHTML=h;
-  row.querySelectorAll('.slot.filled').forEach(s=>s.addEventListener('click',()=>{S.party=S.party.filter(x=>x!==s.dataset.u);save();renderParty();}));
-  const ro=$('roster'); const order=UNITS.filter(u=>!u.noGet).sort((a,b)=>(S.owned.includes(b.id)-S.owned.includes(a.id))||(TIER_ORDER.indexOf(a.tier)-TIER_ORDER.indexOf(b.tier)));
+  row.querySelectorAll('.slot.filled').forEach(s=>s.addEventListener('click',()=>{S.party=S.party.filter(x=>x!==s.dataset.u);save();renderPartyRow();syncRoster();}));
+  $('party-hint').textContent=`출전 ${S.party.length}/10 · XP ${S.xp} · 노란 버튼으로 레벨업(+10%) · 회색은 아직 못 만난 친구`;
+}
+function syncRoster(){ $('roster').querySelectorAll('.card').forEach(c=>c.classList.toggle('in',S.party.includes(c.dataset.u))); }
+function renderParty(keepScroll){
+  renderPartyRow();
+  const ro=$('roster'); const top=keepScroll?ro.scrollTop:0;
+  const order=UNITS.filter(u=>!u.noGet).sort((a,b)=>(S.owned.includes(b.id)-S.owned.includes(a.id))||(TIER_ORDER.indexOf(a.tier)-TIER_ORDER.indexOf(b.tier)));
   ro.innerHTML=order.map(u=>cardHtml(u,(S.party.includes(u.id)?'in ':'')+(S.owned.includes(u.id)?'':'locked'))).join('');
-  ro.querySelectorAll('.lvb').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const id=b.dataset.lv;const c=lvCost(id);if(S.xp>=c&&lvOf(id)<MAX_LV){S.xp-=c;S.lv[id]=lvOf(id)+1;save();sfx('levelup');vib([20,20,40]);renderParty();}}));
+  ro.querySelectorAll('.lvb').forEach(b=>b.addEventListener('click',e=>{e.stopPropagation();const id=b.dataset.lv;const c=lvCost(id);if(S.xp>=c&&lvOf(id)<MAX_LV){S.xp-=c;S.lv[id]=lvOf(id)+1;save();sfx('levelup');vib([20,20,40]);renderParty(true);}}));
   ro.querySelectorAll('.card').forEach(c=>{const go=()=>{const id=c.dataset.u;if(!S.owned.includes(id))return;
     if(S.party.includes(id))S.party=S.party.filter(x=>x!==id); else if(S.party.length<10)S.party.push(id); else {$('party-hint').textContent='10명이 꽉 찼다. 위에서 한 명을 빼고 넣자.';return;}
-    save();renderParty();};
-    c.addEventListener('click',go); c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});});
-  $('party-hint').textContent=`출전 ${S.party.length}/10 · XP ${S.xp} · 노란 버튼으로 레벨업(+10%) · 회색은 아직 못 만난 친구`;
+    save();sfx('tap');renderPartyRow();syncRoster();};
+    // 손가락이 14px 넘게 움직였으면 스크롤이지 누른 게 아니다 (스크롤로 넘어가면 pointercancel이 와서 pointerup이 없다)
+    let pd=null;
+    c.addEventListener('pointerdown',e=>{ if(e.target.closest('.lvb'))return; pd={x:e.clientX,y:e.clientY}; });
+    c.addEventListener('pointerup',e=>{ if(!pd||e.target.closest('.lvb'))return; const moved=Math.hypot(e.clientX-pd.x,e.clientY-pd.y); pd=null; if(moved<14)go(); });
+    c.addEventListener('pointercancel',()=>{pd=null;});
+    c.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go();}});});
+  ro.scrollTop=top;
 }
 
 // ---------- tools ----------
@@ -904,7 +919,7 @@ function startBattle(i){
   B={st,i,t:0,round:r,money:120+50*S.walletLv,income:14+4*S.walletLv,cap:1200,wallet:0,
      party:S.party.map(id=>UBY[id]),
      allies:[],enemies:[],proj:[],eproj:[],fx:[],cd:{},snow:[],
-     total:st.count[diff],spawned:0,nextSpawn:1.5,intruderT:22+Math.random()*10,midAt:Math.max(3,Math.floor(st.count[diff]*(0.5+Math.random()*0.35))),escort:0,
+     total:Math.round(st.count[diff]*roundCount(r)),spawned:0,nextSpawn:1.5,intruderT:22+Math.random()*10,midAt:Math.max(3,Math.floor(st.count[diff]*roundCount(r)*(0.5+Math.random()*0.35))),escort:0,
      baseMax:Math.round((1000+300*S.hpLv)*roundAlly(r)),ebaseMax:Math.round(st.baseHp*d.base*roundEnemy(r)),ebaseShake:0,
      over:false,atkMul:(1+0.1*S.atkLv)*roundAlly(r),hpMul:roundAlly(r),kills:0,intruders:0,deployed:0,spent:0,earned:0,dmgBase:0,waveT:0,boss:null,bannerT:0,stop:0,shake:0,cannon:0,cannonFx:0,cannonShots:0,midDone:false};
   $('banner').classList.remove('on');
