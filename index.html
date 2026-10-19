@@ -274,7 +274,7 @@ p{margin:0;line-height:1.35}
 #share-x{position:absolute;top:10px;right:12px;width:52px;height:52px;border-radius:50%;background:#fff;border:3px solid var(--ink);font-family:var(--display);font-weight:700;font-size:30px;line-height:1;cursor:pointer;box-shadow:2px 2px 0 rgba(0,0,0,.35);z-index:21}
 .savebox{display:flex;flex-direction:column;gap:6px;max-width:520px}
 .savebox textarea{width:100%;height:58px;font-family:ui-monospace,monospace;font-size:12px;border:2px solid var(--line);border-radius:8px;padding:6px;resize:none;background:#fff;color:var(--ink)}
-#s-settings .tools2{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;flex:1;min-height:0;align-content:start}
+#s-settings .tools2{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:10px;flex:1;min-height:0;align-content:start}
 .toggles{display:flex;flex-direction:column;gap:6px}
 .tg{display:flex;justify-content:space-between;align-items:center;font-family:var(--display);font-size:20px;border:2px solid var(--line);border-radius:10px;padding:4px 10px;background:#fff;cursor:pointer}
 .tg b{font-size:17px;color:var(--pencil)}.tg.on b{color:var(--swamp)}
@@ -396,6 +396,7 @@ p{margin:0;line-height:1.35}
         <div class="toggles"><div class="tg" data-opt="sound">효과음 <b></b></div><div class="tg" data-opt="bgm">배경음악 <b></b></div><div class="tg" data-opt="vib">진동 <b></b></div></div></div>
       <div class="tool"><h3>저장</h3><p class="small">코인·강화·점령·친구·편성은 이 기기의 브라우저에 자동 저장된다. 다른 기기나 다른 링크로 옮기려면 저장 코드를 복사해서 거기에 붙여넣는다.</p>
         <div class="savebox"><div class="row"><button class="btn" id="save-copy">저장 코드 복사</button><button class="btn" id="save-load">코드 불러오기</button></div><textarea id="save-code" placeholder="여기에 저장 코드를 붙여넣고 '코드 불러오기'"></textarea><p class="small" id="save-msg"></p></div></div>
+      <div class="tool"><h3>앱으로 설치</h3><p class="small" id="pwa-msg">홈 화면에 추가하면 아이콘으로 바로 켜지고 전체 화면으로 돈다(PWA).</p><button class="btn go" id="pwa-btn">홈 화면에 추가</button></div>
       <div class="tool"><h3>데이터 초기화</h3><p class="small">코인, 강화, 점령 기록, 모은 친구, 점수가 모두 지워진다.</p><button class="btn" id="reset-btn">초기화</button>
         <p class="notes small" style="margin-top:auto">프로토타입 v0.5 · 1~7탄 · 3회차</p></div>
     </div>
@@ -448,7 +449,7 @@ p{margin:0;line-height:1.35}
     <p class="credit">made by YH</p>
   </section>
     <div id="share-modal" hidden><button id="share-x" aria-label="닫기">✕</button><img id="share-img" alt="자랑 카드"><div class="col"><p id="share-msg">이미지를 길게 누르면 저장할 수 있다.</p><button class="btn" id="share-send">카톡 등으로 보내기</button><button class="btn" id="share-save">그림 저장</button><button class="btn" id="share-link">링크 복사</button><button class="btn ghost" id="share-close">닫기</button></div></div>
-    <div id="home-modal" hidden><div class="homebox"><h3>첫 점수 축하! 🎉</h3><p>홈 화면에 추가해 두면 앱처럼 아이콘으로 바로 켤 수 있다.</p><p class="small" id="home-how"></p><p id="home-steps"></p><div class="row" style="justify-content:center"><button class="btn go" id="home-install">바로 추가</button><button class="btn" id="home-later">나중에</button><button class="btn ghost" id="home-never">다시 안 보기</button></div></div></div>
+    <div id="home-modal" hidden><div class="homebox"><h3 id="home-title">첫 점수 축하! 🎉</h3><p>홈 화면에 추가해 두면 앱처럼 아이콘으로 바로 켤 수 있다.</p><p class="small" id="home-how"></p><p id="home-steps"></p><div class="row" style="justify-content:center"><button class="btn go" id="home-install">바로 추가</button><button class="btn" id="home-later">나중에</button><button class="btn ghost" id="home-never">다시 안 보기</button></div></div></div>
 
 </div>
 </div>
@@ -872,7 +873,7 @@ function renderParty(keepScroll){
 
 // ---------- tools ----------
 const UPC=lv=>200*(lv+1);
-function renderSettings(){applyOpt();}
+function renderSettings(){applyOpt();renderPwa();}
 const EXPLORE_MS=60*60*1000;
 let exploreTimer=null;
 function renderExplore(){
@@ -1283,9 +1284,11 @@ const closeShare=()=>{$('share-modal').hidden=true;};
 // 홈 화면 추가 안내: 첫 점수를 받은 뒤 한 번
 let installEvt=null; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;});
 const standalone=()=>(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
-function homeHint(){
-  if(S.tut.home||standalone()||$('s-result').hidden)return;
+function homeHint(force){
+  if(!force&&(S.tut.home||standalone()||$('s-result').hidden))return;
   const ios=/iPhone|iPad|iPod/i.test(navigator.userAgent), kakao=/KAKAOTALK/i.test(navigator.userAgent);
+  $('home-title').textContent=force?'홈 화면에 추가':'첫 점수 축하! 🎉';
+  $('home-never').hidden=!!force;
   $('home-how').textContent=kakao?'카톡 안에서는 안 된다. 오른쪽 위 ⋮ → "다른 브라우저로 열기" 한 뒤에:':'';
   $('home-steps').innerHTML=ios?'사파리 아래 <b>공유 버튼(⎋)</b> → <b>홈 화면에 추가</b>':'크롬 오른쪽 위 <b>⋮</b> → <b>홈 화면에 추가</b>(또는 앱 설치)';
   $('home-install').hidden=!installEvt;
@@ -1293,6 +1296,13 @@ function homeHint(){
 }
 $('home-install').addEventListener('click',async()=>{ if(!installEvt)return; try{ installEvt.prompt(); await installEvt.userChoice; }catch(e){} installEvt=null; S.tut.home=true; save(); $('home-modal').hidden=true; });
 $('home-later').addEventListener('click',()=>{ $('home-modal').hidden=true; });
+// 설정 화면의 설치 버튼
+function renderPwa(){ const ios=/iPhone|iPad|iPod/i.test(navigator.userAgent);
+  if(standalone()){ $('pwa-msg').textContent='이미 앱으로 실행 중이다. 홈 화면 아이콘으로 켜고 있다.'; $('pwa-btn').textContent='설치됨'; $('pwa-btn').disabled=true; }
+  else if(installEvt){ $('pwa-msg').textContent='지금 바로 설치할 수 있다. 누르면 안드로이드 설치 창이 뜬다.'; $('pwa-btn').textContent='앱으로 설치'; $('pwa-btn').disabled=false; }
+  else { $('pwa-msg').textContent=ios?'아이폰: 사파리 아래 공유 버튼(⎋) → "홈 화면에 추가". 그러면 아이콘으로 켜지고 전체 화면이 된다.':'크롬 오른쪽 위 ⋮ → "홈 화면에 추가"(또는 "앱 설치"). 카톡 안에서 열었다면 먼저 다른 브라우저로 열기.'; $('pwa-btn').textContent='방법 보기'; $('pwa-btn').disabled=false; } }
+$('pwa-btn').addEventListener('click',async()=>{ sfx('tap'); if(installEvt){ try{ installEvt.prompt(); const r=await installEvt.userChoice; if(r&&r.outcome==='accepted'){S.tut.home=true;save();} }catch(e){} installEvt=null; renderPwa(); } else homeHint(true); });
+window.addEventListener('appinstalled',()=>{ installEvt=null; S.tut.home=true; save(); try{renderPwa();}catch(e){} });
 $('home-never').addEventListener('click',()=>{ S.tut.home=true; save(); $('home-modal').hidden=true; });
 $('home-modal').addEventListener('click',e=>{ if(e.target===e.currentTarget)$('home-modal').hidden=true; });
 if('serviceWorker' in navigator&&location.protocol==='https:'&&!/claude\.ai|usercontent/.test(location.host)){ navigator.serviceWorker.register('sw.js').catch(()=>{}); }
