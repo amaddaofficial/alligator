@@ -633,12 +633,18 @@ function loadCode(code){
 
 // ---------- sound & vibration: every sound is synthesised, no files ----------
 const AU={ctx:null,master:null,bgm:null,noise:null,comp:null,voices:0};
-function auInit(){ if(AU.ctx)return; const C=window.AudioContext||window.webkitAudioContext; if(!C)return; try{ AU.ctx=new C(); AU.comp=AU.ctx.createDynamicsCompressor(); AU.comp.threshold.value=-20; AU.comp.knee.value=18; AU.comp.ratio.value=8; AU.comp.attack.value=0.003; AU.comp.release.value=0.12; AU.comp.connect(AU.ctx.destination); const hp=AU.ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=90; hp.connect(AU.comp); AU.master=AU.ctx.createGain(); AU.master.gain.value=0.38; AU.master.connect(hp); const bl=AU.ctx.createBiquadFilter(); bl.type='lowpass'; bl.frequency.value=2600; const bh=AU.ctx.createBiquadFilter(); bh.type='highpass'; bh.frequency.value=160; bl.connect(bh); bh.connect(AU.comp); AU.bgm=AU.ctx.createGain(); AU.bgm.gain.value=0.07; AU.bgm.connect(bl); }catch(e){} }
+// 안드로이드(갤럭시)에서 지직거림 방지: latencyHint 'playback'으로 오디오 버퍼를 크게 잡고(끊김 없음), 맨 끝에 리미터를 한 단 더 둔다
+function auInit(){ if(AU.ctx)return; const C=window.AudioContext||window.webkitAudioContext; if(!C)return; try{ try{AU.ctx=new C({latencyHint:'playback'});}catch(e){AU.ctx=new C();}
+  AU.lim=AU.ctx.createDynamicsCompressor(); AU.lim.threshold.value=-8; AU.lim.knee.value=0; AU.lim.ratio.value=20; AU.lim.attack.value=0.002; AU.lim.release.value=0.1; AU.lim.connect(AU.ctx.destination);
+  AU.comp=AU.ctx.createDynamicsCompressor(); AU.comp.threshold.value=-20; AU.comp.knee.value=18; AU.comp.ratio.value=8; AU.comp.attack.value=0.003; AU.comp.release.value=0.12; AU.comp.connect(AU.lim); const hp=AU.ctx.createBiquadFilter(); hp.type='highpass'; hp.frequency.value=90; hp.connect(AU.comp); AU.master=AU.ctx.createGain(); AU.master.gain.value=0.34; AU.master.connect(hp); const bl=AU.ctx.createBiquadFilter(); bl.type='lowpass'; bl.frequency.value=2600; const bh=AU.ctx.createBiquadFilter(); bh.type='highpass'; bh.frequency.value=160; bl.connect(bh); bh.connect(AU.comp); AU.bgm=AU.ctx.createGain(); AU.bgm.gain.value=0.06; AU.bgm.connect(bl); }catch(e){} }
+// 과거 시각에 소리를 시작하면 엔벨로프를 건너뛰어 '뚝' 소리가 난다 — 항상 지금보다 조금 뒤에 시작
+const safeT=(c,at)=>Math.max(c.currentTime+0.015,c.currentTime+(at||0));
 let bgmWanted=null;
 function auResume(){ auInit(); if(AU.ctx&&AU.ctx.state==='suspended')AU.ctx.resume(); if(AU.ctx&&bgmWanted&&seqName!==bgmWanted)setTimeout(()=>bgmPlay(bgmWanted),30); }
 document.addEventListener('pointerdown',auResume,{capture:true}); document.addEventListener('keydown',auResume,{capture:true});
-function tone(o){ if(!S.opt.sound||!AU.ctx||AU.voices>14)return; try{ const c=AU.ctx,t0=c.currentTime+(o.at||0); const osc=c.createOscillator(); osc.type=o.type||'sine'; osc.frequency.setValueAtTime(o.f,t0); if(o.to)osc.frequency.exponentialRampToValueAtTime(o.to,t0+o.d); const g=c.createGain(); g.gain.setValueAtTime(0.0001,t0); g.gain.linearRampToValueAtTime(o.v||0.3,t0+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t0+o.d); osc.connect(g); g.connect(AU.master); AU.voices++; osc.onended=()=>{AU.voices=Math.max(0,AU.voices-1);}; osc.start(t0); osc.stop(t0+o.d+0.03); }catch(e){} }
-function noise(o){ if(!S.opt.sound&&!o.bgm)return; if(!AU.ctx)return; try{ const c=AU.ctx; if(!AU.noise){AU.noise=c.createBuffer(1,c.sampleRate,c.sampleRate);const d=AU.noise.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;} if(!o.bgm&&AU.voices>14)return; const t0=c.currentTime+(o.at||0); const src=c.createBufferSource(); src.buffer=AU.noise; src.loop=true; src.loopStart=Math.random()*0.5; src.loopEnd=src.loopStart+0.4; const f=c.createBiquadFilter(); f.type=o.hp?'highpass':'lowpass'; f.frequency.value=o.fc||800; const g=c.createGain(); g.gain.setValueAtTime(0.0001,t0); g.gain.linearRampToValueAtTime(o.v||0.3,t0+0.006); g.gain.exponentialRampToValueAtTime(0.0001,t0+o.d); src.connect(f); f.connect(g); g.connect(o.bgm?AU.bgm:AU.master); AU.voices++; src.onended=()=>{AU.voices=Math.max(0,AU.voices-1);}; src.start(t0,src.loopStart); src.stop(t0+o.d+0.03); }catch(e){} }
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden&&AU.ctx&&AU.ctx.state==='suspended')AU.ctx.resume(); });
+function tone(o){ if(!S.opt.sound||!AU.ctx||AU.voices>14)return; try{ const c=AU.ctx,t0=safeT(c,o.at); const osc=c.createOscillator(); osc.type=o.type||'sine'; osc.frequency.setValueAtTime(o.f,t0); if(o.to)osc.frequency.exponentialRampToValueAtTime(o.to,t0+o.d); const g=c.createGain(); g.gain.setValueAtTime(0.0001,t0); g.gain.linearRampToValueAtTime(o.v||0.3,t0+0.012); g.gain.exponentialRampToValueAtTime(0.0001,t0+o.d); osc.connect(g); g.connect(AU.master); AU.voices++; osc.onended=()=>{AU.voices=Math.max(0,AU.voices-1);}; osc.start(t0); osc.stop(t0+o.d+0.03); }catch(e){} }
+function noise(o){ if(!S.opt.sound&&!o.bgm)return; if(!AU.ctx)return; try{ const c=AU.ctx; if(!AU.noise){AU.noise=c.createBuffer(1,c.sampleRate,c.sampleRate);const d=AU.noise.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;} if(!o.bgm&&AU.voices>14)return; const t0=safeT(c,o.at); const src=c.createBufferSource(); src.buffer=AU.noise; src.loop=true; src.loopStart=Math.random()*0.5; src.loopEnd=src.loopStart+0.4; const f=c.createBiquadFilter(); f.type=o.hp?'highpass':'lowpass'; f.frequency.value=o.fc||800; const g=c.createGain(); g.gain.setValueAtTime(0.0001,t0); g.gain.linearRampToValueAtTime(o.v||0.3,t0+0.006); g.gain.exponentialRampToValueAtTime(0.0001,t0+o.d); src.connect(f); f.connect(g); g.connect(o.bgm?AU.bgm:AU.master); AU.voices++; src.onended=()=>{AU.voices=Math.max(0,AU.voices-1);}; src.start(t0,src.loopStart); src.stop(t0+o.d+0.03); }catch(e){} }
 const SFX={
  tap:()=>tone({f:700,type:'square',d:0.05,v:0.07}),
  spawn:()=>tone({f:320,to:640,d:0.12,v:0.18}),
@@ -677,20 +683,43 @@ const BGM={
  sky:   {bpm:132,wave:'triangle',root:220,  mel:[0,null,3,null,7,null,3,null,0,null,5,null,8,null,7,null],bass:[-12,-12,null,-12,null,-12,-12,null,-9,-9,null,-9,null,-7,-7,null],perc:true},
  boss:  {bpm:140,wave:'sawtooth',root:174.6,mel:[0,null,0,3,null,0,6,5,0,null,0,3,null,8,6,5],bass:[-12,-12,null,-12,-12,null,-12,null,-10,-10,null,-10,-10,null,-5,null],perc:true},
 };
-let seqTimer=null,seqStep=0,seqName=null,seqNext=0;
-function bgmStop(){ if(seqTimer)clearInterval(seqTimer); seqTimer=null; seqName=null; }
+let seqTimer=null,seqStep=0,seqName=null,seqNext=0,bgmSrc=null;
+const BGM_BUF={};
+// 배경음악은 한 번 미리 렌더링해 두고(OfflineAudioContext) 한 덩어리로 반복 재생한다.
+// 타이머로 음을 하나씩 걸던 방식은 화면이 잠깐 멈추면(그림 로딩, 화면 전환) 밀린 음이 몰려 나와 폰에서 지직거렸다.
+function renderBgm(name){
+  const P=BGM[name], stepS=60/P.bpm/2, len=stepS*16, sr=AU.ctx.sampleRate;
+  const OC=window.OfflineAudioContext||window.webkitOfflineAudioContext; if(!OC)return Promise.reject(new Error('no offline'));
+  const oc=new OC(1,Math.ceil(len*2*sr),sr); let nz=null;
+  const play=(semi,g,dur,wave,t0)=>{ const o=oc.createOscillator(); o.type=wave; o.frequency.value=P.root*Math.pow(2,semi/12); const gn=oc.createGain(); gn.gain.setValueAtTime(0.0001,t0); gn.gain.linearRampToValueAtTime(g,t0+0.015); gn.gain.setValueAtTime(g,t0+Math.max(0.02,dur*0.35)); gn.gain.exponentialRampToValueAtTime(0.0001,t0+dur); o.connect(gn); gn.connect(oc.destination); o.start(t0); o.stop(t0+dur+0.02); };
+  const perc=t0=>{ if(!nz){ nz=oc.createBuffer(1,sr,sr); const d=nz.getChannelData(0); for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1; } const src=oc.createBufferSource(); src.buffer=nz; const f=oc.createBiquadFilter(); f.type='lowpass'; f.frequency.value=1200; const g=oc.createGain(); g.gain.setValueAtTime(0.0001,t0); g.gain.linearRampToValueAtTime(0.22,t0+0.006); g.gain.exponentialRampToValueAtTime(0.0001,t0+0.045); src.connect(f); f.connect(g); g.connect(oc.destination); src.start(t0,Math.random()*0.5); src.stop(t0+0.08); };
+  for(let k=0;k<32;k++){ const i=k%16, t0=k*stepS+0.02;   // 두 바퀴를 그려 두고 뒤쪽 한 바퀴만 반복한다 — 앞 바퀴의 꼬리 음이 이어져 이음새가 안 난다
+    if(P.mel[i]!=null)play(P.mel[i],0.5,P.bell?0.7:stepS*1.5,P.wave,t0);
+    if(P.bass[i]!=null)play(P.bass[i]+12,0.4,stepS*1.6,'triangle',t0);
+    if(P.perc&&i%4===0)perc(t0); }
+  return oc.startRendering().then(buf=>{ BGM_BUF[name]=buf; return buf; });
+}
+function bgmStop(){ if(seqTimer)clearInterval(seqTimer); seqTimer=null; seqName=null;
+  if(bgmSrc){ try{ const c=AU.ctx,g=bgmSrc.g.gain; g.cancelScheduledValues(c.currentTime); g.setValueAtTime(Math.max(0.0001,g.value),c.currentTime); g.linearRampToValueAtTime(0.0001,c.currentTime+0.25); bgmSrc.src.stop(c.currentTime+0.3); }catch(e){} bgmSrc=null; } }
 function bgmPlay(name){
   bgmWanted=name; if(!name){bgmStop();return;} if(seqName===name)return; bgmStop();
-  if(!S.opt.bgm||!AU.ctx)return; const P=BGM[name]; if(!P)return; seqName=name; seqStep=0; seqNext=AU.ctx.currentTime+0.08;
+  if(!S.opt.bgm||!AU.ctx)return; const P=BGM[name]; if(!P)return; seqName=name;
+  const start=buf=>{ if(seqName!==name||!AU.ctx)return; try{ const c=AU.ctx; const src=c.createBufferSource(); src.buffer=buf; src.loop=true; src.loopStart=buf.duration/2; src.loopEnd=buf.duration; const g=c.createGain(); g.gain.setValueAtTime(0.0001,c.currentTime); g.gain.linearRampToValueAtTime(1,c.currentTime+0.5); src.connect(g); g.connect(AU.bgm); src.start(c.currentTime+0.05,buf.duration/2); bgmSrc={src,g}; }catch(e){ bgmPlayLive(name); } };
+  if(BGM_BUF[name])start(BGM_BUF[name]); else renderBgm(name).then(start).catch(()=>bgmPlayLive(name));
+}
+// 미리 렌더링이 안 되는 브라우저용 예비: 타이머로 한 음씩
+function bgmPlayLive(name){
+  if(!AU.ctx||seqName!==name)return; const P=BGM[name]; if(!P)return; seqStep=0; seqNext=AU.ctx.currentTime+0.08;
   const stepS=60/P.bpm/2;
-  const play=(semi,g,dur,wave,t0)=>{try{const c=AU.ctx;const o=c.createOscillator();o.type=wave;o.frequency.value=P.root*Math.pow(2,semi/12);const gn=c.createGain();gn.gain.setValueAtTime(0.0001,t0);gn.gain.linearRampToValueAtTime(g,t0+0.015);gn.gain.setValueAtTime(g,t0+Math.max(0.02,dur*0.35));gn.gain.exponentialRampToValueAtTime(0.0001,t0+dur);o.connect(gn);gn.connect(AU.bgm);o.start(t0);o.stop(t0+dur+0.02);}catch(e){}};
-  const tick=()=>{ if(!AU.ctx||seqName!==name)return; const c=AU.ctx;
-    while(seqNext<c.currentTime+0.3){ const i=seqStep%16, t0=seqNext;
+  const play=(semi,g,dur,wave,t0)=>{try{const c=AU.ctx;t0=Math.max(t0,c.currentTime+0.015);const o=c.createOscillator();o.type=wave;o.frequency.value=P.root*Math.pow(2,semi/12);const gn=c.createGain();gn.gain.setValueAtTime(0.0001,t0);gn.gain.linearRampToValueAtTime(g,t0+0.015);gn.gain.setValueAtTime(g,t0+Math.max(0.02,dur*0.35));gn.gain.exponentialRampToValueAtTime(0.0001,t0+dur);o.connect(gn);gn.connect(AU.bgm);o.start(t0);o.stop(t0+dur+0.02);}catch(e){}};
+  const tick=()=>{ if(!AU.ctx||seqName!==name||document.hidden)return; const c=AU.ctx;
+    if(seqNext<c.currentTime-0.2){ seqNext=c.currentTime+0.1; }   // 화면이 멈췄다 돌아오면 밀린 음을 한꺼번에 쏟지 않고 박자를 다시 맞춘다
+    while(seqNext<c.currentTime+0.5){ const i=seqStep%16, t0=seqNext;
       if(P.mel[i]!=null)play(P.mel[i],0.5,P.bell?0.7:stepS*1.5,P.wave,t0);
       if(P.bass[i]!=null)play(P.bass[i]+12,0.4,stepS*1.6,'triangle',t0);     // 베이스는 한 옥타브 위에서: 폰 스피커가 낼 수 있는 음역
       if(P.perc&&i%4===0)noise({fc:1200,d:0.045,v:0.22,bgm:true,at:t0-c.currentTime});
       seqStep++; seqNext+=stepS; } };
-  tick(); seqTimer=setInterval(tick,80);
+  tick(); seqTimer=setInterval(tick,100);
 }
 function applyOpt(){ if(!S.opt.bgm)bgmStop(); else if(bgmWanted)bgmPlay(bgmWanted); document.querySelectorAll('.tg').forEach(el=>{const k=el.dataset.opt;el.classList.toggle('on',!!S.opt[k]);el.querySelector('b').textContent=S.opt[k]?'켬':'끔';}); const m=S.opt.sound||S.opt.bgm; for(const id of ['mute-w','mute-b']){$(id).textContent=m?'소리 켬':'소리 끔';} }
 function toggleMute(){ const on=!(S.opt.sound||S.opt.bgm); S.opt.sound=on; S.opt.bgm=on; save(); applyOpt(); if(on)sfx('tap'); }
@@ -1880,7 +1909,7 @@ function fit(){
 window.addEventListener('resize',fit); if(window.visualViewport)window.visualViewport.addEventListener('resize',fit); fit(); setTimeout(fit,300);
 // 점검용 훅: 콘솔에서 __akeo.boss(2) 하면 3번 성 보스전으로 바로 간다
 applyOpt();
-window.__akeo={boss:(i,d)=>{if(d)diff=d;cur=i;openPick();},battle:(i,d)=>{if(d)diff=d;startBattle(i);},state:()=>({B,BF,S}),hit:a=>hitBase(a),killBoss:()=>hitBoss(9999,BF.boss.x),
+window.__akeo={boss:(i,d)=>{if(d)diff=d;cur=i;openPick();},battle:(i,d)=>{if(d)diff=d;startBattle(i);},state:()=>({B,BF,S}),bgm:()=>({name:seqName,rendered:Object.keys(BGM_BUF),live:!!seqTimer,playing:!!bgmSrc,buf:BGM_BUF[seqName]||null,ctx:AU.ctx}),hit:a=>hitBase(a),killBoss:()=>hitBoss(9999,BF.boss.x),
   demo:(ids,en)=>{ B.allies=[];B.enemies=[];B.proj=[]; ids.forEach((id,k)=>{const u=UBY[id];const hw=u.h*ratioOf(u.spr,1.2)*0.5;B.allies.push({side:'a',def:u,style:styleOf(u),swing:0.22,lvm:1,x:90+k*96,y:GROUND,hp:1,max:1,face:-1,atk:0,hw,h:u.h,flash:0,lunge:0,hop:0,spinT:0,breathT:0,cyc:0,fade:1,pop:0,dvx:0,dvy:0,rot:0});}); (en||[]).forEach((id,k)=>{const d=ENEMY[id];const h=d.h;B.enemies.push({side:'e',def:d,x:120+k*110,y:GROUND,vy:0,falling:false,hp:1,max:1,atkP:1,face:1,atk:0,hw:h*ratioOf(d.spr,1.4)*0.5,h,flash:0,lunge:0,swing:0.22,dead:false,fade:1,burn:0,slow:0,root:0,stun:0,bob:0});}); B.stop=100; }};
 show('s-title');
 })();
