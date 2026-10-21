@@ -444,6 +444,8 @@ const UNITS=[
  {id:'sleepy',name:'잠꾸러기악어',tier:'기본스크린',spr:'sleepy',cost:140,hp:340,atk:5,spd:40,range:28,cd:1.6,re:6,h:70,type:'melee',sleeps:true,tip:'튼튼, 가끔 잠'},
  {id:'drink',name:'음료수악어',tier:'기본스크린',spr:'drink',cost:110,hp:150,atk:8,spd:55,range:30,cd:1.2,re:4,h:70,type:'melee',heal:20,tip:'근처 친구 회복'},
  {id:'reality',name:'리얼리티악어',tier:'기본스크린',spr:'reality',cost:160,hp:260,atk:20,spd:50,range:45,cd:1.3,re:6,h:44,type:'melee',tip:'진짜 악어'},
+ {id:'cloud',name:'구름악어',tier:'기본스크린',spr:'cloud',cost:80,hp:120,atk:6,spd:60,range:40,cd:1.2,re:3,h:54,type:'melee',fly:40,tip:'둥실 떠서 간다, 새도 닿는다'},
+ {id:'pillow',name:'배게악어',tier:'기본스크린',spr:'pillow',cost:100,hp:320,atk:3,spd:45,range:26,cd:1.4,re:4,h:50,type:'melee',tip:'푹신해서 오래 버틴다'},
  {id:'straw',name:'빨대악어',tier:'기본스크린',spr:'straw',cost:130,hp:100,atk:14,spd:60,range:120,cd:1.4,re:5,h:58,type:'bullet',tip:'빨대로 쏜다'},
  // 스크린
  {id:'deliver',name:'배달악어',tier:'스크린',spr:'deliver',cost:180,hp:160,atk:0,spd:90,range:0,cd:1,re:10,h:66,type:'deliver',blast:300,tip:'토성에 택배 폭발'},
@@ -455,6 +457,10 @@ const UNITS=[
  {id:'strong',name:'강한악어',tier:'스크린',spr:'strong',cost:200,hp:200,atk:40,spd:60,range:34,cd:1.3,re:7,h:58,type:'melee',tip:'힘이 세다'},
  {id:'pirate',name:'해적악어',tier:'스크린',spr:'pirate',cost:220,hp:170,atk:20,spd:75,range:38,cd:1.0,re:7,h:62,type:'melee',hits:2,tip:'두 번 벤다'},
  {id:'tail',name:'꼬리악어',tier:'스크린',spr:'tail',cost:170,hp:140,atk:16,spd:65,range:70,cd:1.1,re:6,h:42,type:'spin',tip:'꼬리로 양쪽 휘두르기'},
+ {id:'ninja',name:'닌자악어',tier:'스크린',spr:'ninja',cost:260,hp:140,atk:30,spd:120,range:38,cd:0.7,re:7,h:56,type:'melee',hits:2,tip:'빠르게 두 번 벤다'},
+ {id:'hammer',name:'해머악어',tier:'스크린',spr:'hammer',cost:280,hp:220,atk:55,spd:45,range:44,cd:2.0,re:9,h:66,type:'melee',tip:'망치로 쾅'},
+ {id:'spear',name:'창악어',tier:'스크린',spr:'spear',cost:230,hp:160,atk:28,spd:65,range:95,cd:1.3,re:7,h:56,type:'melee',tip:'창이 길다'},
+ {id:'dino',name:'공룡악어',tier:'스크린',spr:'dino',cost:320,hp:360,atk:36,spd:70,range:46,cd:1.2,re:9,h:70,type:'melee',tip:'공룡처럼 문다'},
  {id:'big',name:'큰악어',tier:'스크린',spr:'big',cost:400,hp:400,atk:80,spd:40,range:50,cd:2.4,re:12,h:110,type:'melee',tip:'한 방이 크다'},
  // 이벤트스크린
  {id:'pixel',name:'픽셀악어',tier:'이벤트스크린',spr:'pixel',cost:150,hp:120,atk:20,spd:60,range:36,cd:1.0,re:5,h:54,type:'melee',tip:'네모네모'},
@@ -473,6 +479,9 @@ const UNITS=[
  {id:'runaway',name:'도망쳐악어',tier:'이벤트스크린',spr:'runaway',cost:60,hp:60,atk:12,spd:110,range:30,cd:0.7,re:2,h:60,type:'melee',tip:'치고 빠진다'},
  {id:'plane',name:'비행기악어',tier:'이벤트스크린',spr:'plane',cost:320,hp:110,atk:15,spd:140,range:150,cd:1.0,re:9,h:48,type:'bullet',fly:120,tip:'높이 날며 쏜다'},
  {id:'monster',name:'괴물악어',tier:'이벤트스크린',spr:'monster',cost:550,hp:600,atk:55,spd:45,range:70,cd:1.8,re:16,h:76,type:'multi',tip:'괴물, 앞쪽을 쓸어버린다'},
+ {id:'balloon',name:'풍선악어',tier:'이벤트스크린',spr:'balloon',cost:200,hp:90,atk:12,spd:50,range:60,cd:1.2,re:6,h:70,type:'melee',fly:110,tip:'풍선 타고 둥둥'},
+ {id:'drone',name:'드론악어',tier:'이벤트스크린',spr:'drone',cost:340,hp:130,atk:16,spd:90,range:180,cd:0.9,re:9,h:50,type:'bullet',fly:120,tip:'드론 사격'},
+ {id:'weird',name:'이상한악어',tier:'이벤트스크린',spr:'weird',cost:170,hp:170,atk:19,spd:75,range:34,cd:1.0,re:6,h:56,type:'melee',tip:'이상하게 움직인다'},
  {id:'corpse',name:'시체악어',tier:'이벤트스크린',spr:'corpse',cost:70,hp:300,atk:3,spd:30,range:26,cd:2.0,re:4,h:50,type:'melee',tip:'느리고 질기다'},
  // 슈퍼스크린
  {id:'slow',name:'느린악어',tier:'슈퍼스크린',spr:'slow',cost:120,hp:350,atk:30,spd:25,range:34,cd:2.0,re:6,h:62,type:'melee',tip:'느리지만 세다'},
@@ -486,6 +495,9 @@ const UNITS=[
  {id:'money',name:'돈악어',tier:'슈퍼스크린',spr:'money',cost:250,hp:120,atk:10,spd:60,range:30,cd:1.2,re:8,h:56,type:'melee',coin:6,tip:'때릴 때마다 돈'},
  {id:'burst',name:'폭딜악어',tier:'슈퍼스크린',spr:'burst',cost:480,hp:150,atk:120,spd:55,range:60,cd:3.0,re:14,h:60,type:'multi',tip:'한 입에 120, 앞쪽 전부'},
  {id:'sphinx',name:'스핑크스악어',tier:'슈퍼스크린',spr:'sphinx',cost:360,hp:380,atk:35,spd:45,range:80,cd:1.6,re:12,h:50,type:'multi',tip:'앞쪽 전부'},
+ {id:'angel',name:'천사악어',tier:'슈퍼스크린',spr:'angel',cost:420,hp:260,atk:22,spd:60,range:50,cd:1.2,re:12,h:62,type:'melee',fly:90,heal:30,tip:'날면서 친구를 치료'},
+ {id:'devil',name:'악마악어',tier:'슈퍼스크린',spr:'devil',cost:460,hp:280,atk:40,spd:70,range:90,cd:1.4,re:13,h:62,type:'multi',fly:70,elem:'불',tip:'악마의 불꽃'},
+ {id:'spaceship',name:'우주선악어',tier:'슈퍼스크린',spr:'spaceship',cost:520,hp:300,atk:50,spd:50,range:240,cd:2.2,re:15,h:80,type:'arc',splash:70,fly:140,tip:'우주에서 폭격'},
  {id:'white',name:'뱀악어',tier:'슈퍼스크린',spr:'white',cost:340,hp:300,atk:32,spd:60,range:48,cd:1.0,re:10,h:56,type:'melee',tip:'뱀 팔로 휘감는다'},
  // 레어스크린
  {id:'mall',name:'백화점악어',tier:'레어스크린',spr:'mall',cost:700,hp:800,atk:40,spd:40,range:60,cd:1.5,re:20,h:80,type:'multi',tip:'카트에 탄 악어들'},
@@ -499,6 +511,9 @@ const UNITS=[
  {id:'bomber',name:'폭격기악어',tier:'레어스크린',spr:'bomber',cost:750,hp:250,atk:80,spd:110,range:200,cd:2.5,re:20,h:60,type:'arc',splash:90,fly:130,tip:'폭탄 투하'},
  {id:'music',name:'음악악어',tier:'레어스크린',spr:'music',cost:380,hp:200,atk:18,spd:60,range:120,cd:1.0,re:10,h:56,type:'multi',tip:'음표가 퍼진다'},
  {id:'nuke',name:'핵악어',tier:'레어스크린',spr:'nuke',cost:1500,hp:100,atk:0,spd:60,range:0,cd:1,re:60,h:60,type:'deliver',blast:1500,tip:'토성에 핵'},
+ {id:'pyramid',name:'피라미드악어',tier:'레어스크린',spr:'pyramid',cost:800,hp:1400,atk:45,spd:25,range:60,cd:2.0,re:24,h:120,type:'melee',elem:'돌',tip:'피라미드처럼 단단하다'},
+ {id:'saturn',name:'토성악어',tier:'레어스크린',spr:'saturn',cost:650,hp:400,atk:60,spd:55,range:200,cd:1.8,re:18,h:60,type:'arc',splash:90,tip:'고리를 던진다'},
+ {id:'goku',name:'손오공악어',tier:'레어스크린',spr:'goku',cost:700,hp:500,atk:70,spd:80,range:110,cd:1.1,re:20,h:64,type:'multi',fly:50,tip:'근두운 타고 여의봉 휘두르기'},
  {id:'air',name:'공중악어',tier:'레어스크린',spr:'air',cost:420,hp:220,atk:30,spd:70,range:60,cd:1.2,re:12,h:56,type:'melee',fly:150,tip:'공중에서 내려친다'},
  // 특별
  {id:'fast',name:'빠른악어',tier:'특별',spr:'fast',cost:75,hp:55,atk:10,spd:170,range:28,cd:0.6,re:3,h:44,type:'melee',tip:'빠르다'},
@@ -554,6 +569,7 @@ const ATK_STYLE={sword:'slash',pirate:'slash',adventure:'slash',timeline:'slash'
   long:'thrust',time:'thrust',straw:'straw',sniper:'bullet',mg:'bullet',plane:'bullet',robo:'laser',lens:'flash',movie:'film',space:'star',moon:'moon',eva:'bullet',symbol:'star',
   archer:'arrow',castle:'arrow',water:'water',big:'swing',huge:'stomp',jump:'stomp',air:'stomp',tank:'push',armor:'push',hide:'push',car:'ram',mall:'ram',fast:'ram',
   white:'whip',angry:'rampage',monster:'rampage',burst:'chomp',reality:'chomp',sphinx:'sweep',yong:'sweep',dragon:'breath',fire:'breath',doom:'breath',god:'bolt',grass:'roots',tree:'roots',country:'flag',music:'song',rock:'shell',cannon:'shell',tankS:'shell',bomber:'shell'};
+Object.assign(ATK_STYLE,{ninja:'slash',hammer:'swing',spear:'thrust',dino:'chomp',pillow:'push',weird:'whip',devil:'breath',goku:'sweep',pyramid:'stomp',spaceship:'shell',saturn:'shell',drone:'bullet'});
 const DEF_STYLE={melee:'bite',arrow:'arrow',bullet:'bullet',burst:'bullet',arc:'shell',multi:'breath',spin:'spin',deliver:'bite'};
 const styleOf=u=>ATK_STYLE[u.id]||DEF_STYLE[u.type]||'bite';
 const PROJ_SPD={bullet:720,laser:1150,water:430,note:380,film:560,star:540,straw:620,moon:480,flash:1400,arrow:460};
@@ -604,6 +620,7 @@ const BOSSES={
  camel:  {name:'왕낙타',   spr:'boss_camel',  h:300,patterns:['headslam','stomp','spit']},
  jelly:  {name:'왕해파리', spr:'boss_jelly',  h:250,patterns:['stings','tentacle','drift'],hover:150},
  snowman:{name:'왕눈사람', spr:'boss_snowman',h:260,patterns:['snowballs','flame','headroll']},
+ eye:    {name:'왕눈악어',  spr:'boss_eye',    h:200,patterns:['stings','drift','bubbles'],hover:120},   // 8번 성 보스 후보 — 패턴은 임시, 성은 아직 닫혀 있다
 };
 
 // ---------- save ----------
@@ -877,7 +894,7 @@ function renderDexHead(){
 }
 function renderDex(){
   renderDexHead();
-  let html=`<p class="notes"><b>v0.3.</b> 도화지의 악어 ${UNITS.length}마리가 전부 들어왔다. 각자 생김새·공격·체력이 다르고, 처음에는 기본·스크린·이벤트스크린 친구들을 데리고 시작한다. 나머지는 캠프파이어에서 숯불로 만난다. 회색은 아직 못 만난 친구.</p>
+  let html=`<p class="notes"><b>v0.6.</b> 도화지의 악어 ${UNITS.length}마리가 전부 들어왔다. 각자 생김새·공격·체력이 다르고, 처음에는 기본·스크린·이벤트스크린 친구들을 데리고 시작한다. 나머지는 캠프파이어에서 숯불로 만난다. 회색은 아직 못 만난 친구.</p>
   <div class="elemrule"><span class="tag elem-불">불</span>＞<span class="tag elem-나무">나무</span>＞<span class="tag elem-물">물</span>＞<span class="tag elem-돌">돌</span>＞<span class="tag elem-불">불</span><span class="small">상성이면 2배 · 불=화상, 물=둔화, 나무=묶기, 돌=기절</span></div>`;
   for(const t of TIER_ORDER){
     const us=UNITS.filter(u=>u.tier===t);
