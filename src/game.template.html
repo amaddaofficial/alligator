@@ -78,15 +78,23 @@ p{margin:0;line-height:1.35}
 .tile .small{max-width:15em}
 
 /* map */
-#s-map .mapwrap{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
-#s-map svg{width:100%;height:100%;max-height:300px}
+#s-map .mapwrap{flex:none;height:232px;display:flex;align-items:center;justify-content:center}
+#s-map svg{width:100%;height:100%}
+#s-map .topbar h2{font-size:34px}
+#map-subs{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;flex:1;min-height:0;align-items:stretch}
+.charrow{display:flex;align-items:center;gap:10px}
+.charrow .ch{font-family:var(--display);font-weight:700;font-size:30px;line-height:1}
+.charrow .st{font-family:var(--display);font-size:22px;color:var(--coin)}
+.charrow .info{font-size:17px;color:var(--pencil);margin-left:8px}
+.arrow{font-family:var(--display);font-weight:700;font-size:26px;width:46px;height:42px;border:2.5px solid var(--ink);border-radius:12px 10px 14px 10px;background:#fff;cursor:pointer;box-shadow:2px 2px 0 var(--line);line-height:1}
+.arrow[disabled]{opacity:.3;cursor:default}
 .chtab{font-family:var(--display);font-weight:700;font-size:19px;padding:5px 14px;border:2.5px solid var(--ink);border-radius:12px 10px 14px 10px;background:#fff;cursor:pointer;box-shadow:2px 2px 0 var(--line)}
 .chtab.on{background:#fff6e4;border-color:var(--coin)}
 .chtab.locked{opacity:.4;cursor:default;border-style:dashed}
 .chtab .st{font-size:13px;color:var(--coin);font-weight:400;margin-left:6px}
-.subbtn{font-family:var(--display);font-weight:700;font-size:19px;padding:6px 14px;border:2.5px solid var(--ink);border-radius:12px 10px 14px 10px;background:#fff;cursor:pointer;box-shadow:2px 2px 0 var(--line);display:flex;flex-direction:column;align-items:center;line-height:1.1}
-.subbtn small{font-size:12px;color:var(--pencil);font-weight:400}
-.subbtn .st{color:var(--coin);font-size:14px}
+.subbtn{font-family:var(--display);font-weight:700;font-size:30px;padding:8px 14px;border:3px solid var(--ink);border-radius:16px 12px 18px 12px;background:#fff;cursor:pointer;box-shadow:3px 3px 0 var(--line);display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.1;gap:4px}
+.subbtn small{font-size:17px;color:var(--pencil);font-weight:400}
+.subbtn .st{color:var(--coin);font-size:24px;letter-spacing:2px}
 .subbtn.done{background:#e7f1e3}
 .subbtn.locked{opacity:.4;cursor:default;border-style:dashed}
 .subbtn.boss{border-color:var(--fire)}
@@ -95,7 +103,7 @@ p{margin:0;line-height:1.35}
 .node{cursor:pointer}
 .node circle{fill:#fff;stroke:var(--ink);stroke-width:3}
 .node text{font-family:var(--display);font-weight:700;font-size:22px;fill:var(--ink);text-anchor:middle;dominant-baseline:central}
-.node .lbl{font-size:17px;font-weight:400;fill:var(--pencil)}
+.node .lbl{font-size:18px;font-weight:400;fill:var(--pencil)}
 .node.locked circle{stroke:var(--line);stroke-dasharray:6 5}
 .node.locked text{fill:var(--line)}
 .node.locked .lbl{fill:var(--pencil)}
@@ -119,6 +127,13 @@ p{margin:0;line-height:1.35}
 .card img{height:50px;max-width:94%;object-fit:contain}
 .card .nm{font-family:var(--display);font-weight:700;font-size:17px;line-height:1.05;white-space:normal;text-align:center;max-width:100%;word-break:keep-all}
 .card .st{font-size:12px;color:var(--pencil);font-variant-numeric:tabular-nums;line-height:1.1;white-space:normal;text-align:center;max-width:100%}
+/* 등급 테두리: 기본 회색 · 스크린 초록 · 이벤트 파랑 · 슈퍼 보라 · 특별 금색 · 레어 주황 (와우식) */
+.t-기본스크린{border-color:#9a9a9a!important;box-shadow:2px 2px 0 #cfcfcf!important}
+.t-스크린{border-color:#1eaa3c!important;box-shadow:2px 2px 0 #bfe3c6!important}
+.t-이벤트스크린{border-color:#2a7fd4!important;box-shadow:2px 2px 0 #c2d9f3!important}
+.t-슈퍼스크린{border-color:#9b3fd8!important;box-shadow:2px 2px 0 #dcc6f0!important}
+.t-특별{border-color:#d4a300!important;box-shadow:2px 2px 0 #f2e2a3!important;background:#fffbea}
+.t-레어스크린{border-color:#ff7a00!important;box-shadow:2px 2px 0 #ffd3ad!important;background:#fff6ee}
 .card.in{background:#eaf3e6;border-color:var(--swamp)}
 .card.in::after{content:"출전";position:absolute;left:4px;top:4px;font-family:var(--display);font-size:12px;font-weight:700;color:#fff;background:var(--swamp);padding:2px 5px;border-radius:6px}
 .card.locked{opacity:.45;cursor:default}
@@ -325,14 +340,14 @@ p{margin:0;line-height:1.35}
 
   <section class="screen" id="s-map" hidden>
     <div class="topbar"><h2>지도실 <span class="small" id="map-diff"></span></h2><p class="small" id="map-round"></p><div class="wallet" id="wallet-map"></div><div class="row"><button class="btn ghost" data-go="s-party">편성</button><button class="btn ghost" data-go="s-main">메인화면</button></div></div>
-    <div class="row" id="map-tabs" style="gap:8px"></div>
-    <div class="mapwrap"><svg id="mapsvg" viewBox="0 0 900 330" aria-label="스테이지 지도"></svg></div>
-    <div class="row" id="map-subs" style="justify-content:center;gap:10px;min-height:52px"></div>
-    <p class="small" id="map-hint">성을 누르면 1·2·3판이 나온다. 1판은 그 성 적만, 2판은 섞여서, 3판은 보스전.</p>
+    <div class="row" id="map-tabs" style="gap:10px;align-items:center"></div>
+    <div class="mapwrap"><svg id="mapsvg" viewBox="0 0 908 232" aria-label="스테이지 지도"></svg></div>
+    <div id="map-subs"></div>
+    <p class="small" id="map-hint" style="font-size:16px">성을 누르면 1·2·3판이 나온다. 1판은 그 성 적만, 2판은 섞여서, 3판은 보스전.</p>
   </section>
 
   <section class="screen" id="s-party" hidden>
-    <div class="topbar"><h2>편성 <span class="small">전투에 데려갈 10명</span></h2><p class="small" id="party-hint">아래에서 친구를 누르면 들어가고, 다시 누르면 빠진다.</p><button class="btn ghost" id="party-back">돌아가기</button></div>
+    <div class="topbar"><h2>편성 <span class="small">전투에 데려갈 10명</span></h2><p class="small" id="party-hint" style="font-size:14px;max-width:60%">아래에서 친구를 누르면 들어가고, 다시 누르면 빠진다.</p><button class="btn ghost" id="party-back">돌아가기</button></div>
     <div class="party-row" id="party-row"></div>
     <div class="roster" id="roster"></div>
   </section>
@@ -380,14 +395,14 @@ p{margin:0;line-height:1.35}
         <div class="toggles"><div class="tg" data-opt="sound">효과음 <b></b></div><div class="tg" data-opt="bgm">배경음악 <b></b></div><div class="tg" data-opt="vib">진동 <b></b></div></div></div>
       <div class="tool"><h3>저장</h3><p class="small">코인·강화·점령·친구·편성은 이 기기의 브라우저에 자동 저장된다. 다른 기기나 다른 링크로 옮기려면 저장 코드를 복사해서 거기에 붙여넣는다.</p>
         <div class="savebox"><div class="row"><button class="btn" id="save-copy">저장 코드 복사</button><button class="btn" id="save-load">코드 불러오기</button></div><textarea id="save-code" placeholder="여기에 저장 코드를 붙여넣고 '코드 불러오기'"></textarea><p class="small" id="save-msg"></p></div></div>
-      <div class="tool"><h3>앱으로 설치</h3><p class="small" id="pwa-msg">홈 화면에 추가하면 아이콘으로 바로 켜지고 전체 화면으로 돈다(PWA).</p><button class="btn go" id="pwa-btn">홈 화면에 추가</button></div>
+      <div class="tool"><h3>앱으로 설치 · 가로 고정</h3><p class="small" id="pwa-msg">홈 화면에 추가하면 아이콘으로 바로 켜지고 가로로 고정된 전체 화면으로 돈다(PWA).</p><button class="btn go" id="pwa-btn">홈 화면에 추가</button><button class="btn" id="fs-btn" style="margin-top:6px">전체화면 · 가로 고정</button><p class="small" id="fs-msg"></p></div>
       <div class="tool"><h3>데이터 초기화</h3><p class="small">코인, 강화, 점령 기록, 모은 친구, 점수가 모두 지워진다.</p><button class="btn" id="reset-btn">초기화</button>
         <p class="notes small" style="margin-top:auto">프로토타입 v0.5 · 1~7탄 · 3회차</p></div>
     </div>
   </section>
 
   <section class="screen" id="s-pick" hidden>
-    <div class="topbar"><h2>보스전 · 한 명만 고른다</h2><p class="small" id="pick-sub"></p></div>
+    <div class="topbar"><h2>보스전 · 한 명만 고른다</h2><p class="small" id="pick-sub"></p><div class="row"><button class="btn ghost" data-go="s-map">지도실</button><button class="btn ghost" data-go="s-party">편성</button></div></div>
     <div class="picks" id="picks"></div>
     <p class="small">보스전은 직접 움직인다. ◀ ▶ 이동, 점프, 공격. 키보드는 A·D 이동, W 점프, 스페이스 공격.</p>
   </section>
@@ -878,10 +893,12 @@ function renderMap(){
   const P=prog(), c=P.ch;
   $('map-diff').textContent=`· ${diff}`;$('wallet-map').innerHTML=walletHtml();
   $('map-round').textContent=`챕터 ${c} · 적 ${Math.round(chEnemy(c)*100)}% · 친구 ${Math.round(chAlly(c)*100)}%${c<P.max?' · 지난 챕터(보상 60%)':''}`;
-  // 챕터 탭 + 챕터별 별점
-  $('map-tabs').innerHTML=Array.from({length:MAX_CH},(_,k)=>k+1).map(k=>`<button class="chtab${k===c?' on':''}${k>P.max?' locked':''}" data-ch="${k}" ${k>P.max?'disabled':''}>챕터 ${k}<span class="st">★${chapterStars(k)}/${chapterMax()}</span></button>`).join('');
-  $('map-tabs').querySelectorAll('.chtab').forEach(b=>b.addEventListener('click',()=>{ if(b.disabled)return; sfx('tap'); P.ch=+b.dataset.ch; save(); mapSel=null; renderMap(); }));
-  const svg=$('mapsvg'); const pts=[[80,220],[200,120],[330,205],[460,95],[590,195],[720,85],[840,185],[860,300]];
+  // 왼쪽 위 챕터 표시 + 좌우 화살표
+  $('map-tabs').innerHTML=`<div class="charrow"><button class="arrow" id="ch-prev" ${c<=1?'disabled':''} aria-label="이전 챕터">◀</button><span class="ch">챕터 ${c}</span><span class="st">★${chapterStars(c)}/${chapterMax()}</span><button class="arrow" id="ch-next" ${c>=P.max?'disabled':''} aria-label="다음 챕터">▶</button><span class="info">적 ${Math.round(chEnemy(c)*100)}% · 친구 ${Math.round(chAlly(c)*100)}%${c<P.max?' · 지난 챕터(보상 60%)':''}${P.max<MAX_CH?` · 챕터 ${P.max+1}은 ${P.max}챕터 24판을 다 깨면`:''}</span></div>`;
+  $('ch-prev').addEventListener('click',()=>{ if(c<=1)return; sfx('tap'); P.ch=c-1; save(); mapSel=null; renderMap(); });
+  $('ch-next').addEventListener('click',()=>{ if(c>=P.max)return; sfx('tap'); P.ch=c+1; save(); mapSel=null; renderMap(); });
+  $('map-round').textContent='';
+  const svg=$('mapsvg'); const pts=[[62,140],[182,74],[302,140],[422,74],[542,140],[662,74],[782,140],[862,60]];
   // 현위치: 이 챕터에서 아직 안 깬 첫 판의 성
   let hereIdx=-1; STAGES.forEach((st,i)=>{ if(st.hidden||hereIdx>=0)return; if([1,2,3].some(s=>nodeStars(c,i,s)===0))hereIdx=i; });
   if(mapSel==null)mapSel=Math.max(0,hereIdx);
@@ -892,12 +909,12 @@ function renderMap(){
     const [x,y]=pts[i]; const stars=[1,2,3].reduce((a,s)=>a+nodeStars(c,i,s),0); const done=[1,2,3].every(s=>nodeStars(c,i,s)>0); const open=nodeOpen(c,i,1);
     const cls='node'+(open?'':' locked')+(done?' done':'')+(i===mapSel?' sel':'');
     html+=`<g class="${cls}" data-i="${i}" tabindex="${open?0:-1}" role="button" aria-label="${st.n}번 성 ${st.name}">
-      <circle cx="${x}" cy="${y}" r="38" style="${open?`fill:${st.sky};stroke:${st.color}`:''}"/>
-      <g class="ico" transform="translate(${x} ${y-4}) scale(0.74)" style="${open?`stroke:${st.color}`:''}">${ICON[st.scene]||''}</g>
-      <text x="${x}" y="${y+25}" style="font-size:14px">${st.n}번</text>
-      <text class="lbl" x="${x}" y="${y+58}">${st.name}${st.allBoss?' · 보스':st.elem?` · ${st.elem}`:''}</text>
-      <text x="${x}" y="${y+76}" style="font-size:13px;fill:#d9a441">${stars?'★'+stars+'/9':''}</text>
-      ${i===hereIdx?`<text class="here" x="${x}" y="${y-50}">▼ 현위치</text>`:''}</g>`;
+      <circle cx="${x}" cy="${y}" r="44" style="${open?`fill:${st.sky};stroke:${st.color}`:''}"/>
+      <g class="ico" transform="translate(${x} ${y-6}) scale(0.9)" style="${open?`stroke:${st.color}`:''}">${ICON[st.scene]||''}</g>
+      <text x="${x}" y="${y+28}" style="font-size:16px">${st.n}번</text>
+      <text class="lbl" x="${x}" y="${y+64}">${st.name}</text>
+      <text x="${x}" y="${y+82}" style="font-size:15px;fill:#d9a441">${stars?'★'+stars+'/9':(st.allBoss?'보스':st.elem||'')}</text>
+      ${i===hereIdx?`<text class="here" x="${x}" y="${y-58}">▼ 현위치</text>`:''}</g>`;
   });
   svg.innerHTML=html;
   svg.querySelectorAll('.node').forEach(n=>{
@@ -910,7 +927,7 @@ function renderSubs(){
   const P=prog(), c=P.ch, i=mapSel, st=STAGES[i]; if(!st){$('map-subs').innerHTML='';return;}
   const desc=s=>st.allBoss?(s===3?'왕눈악어':'보스 둘'):(s===1?`${ENEMY[st.enemy].name}만`:s===2?'섞여서·난입':`보스 ${BOSSES[st.boss].name}`);
   $('map-subs').innerHTML=[1,2,3].map(s=>{ const open=nodeOpen(c,i,s), stars=nodeStars(c,i,s);
-    return `<button class="subbtn${open?'':' locked'}${stars?' done':''}${s===3||st.allBoss?' boss':''}" data-sub="${s}" ${open?'':'disabled'}>${st.n}-${s} <small>${desc(s)}</small><span class="st">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</span></button>`; }).join('');
+    return `<button class="subbtn${open?'':' locked'}${stars?' done':''}${s===3||st.allBoss?' boss':''}" data-sub="${s}" ${open?'':'disabled'}><span>${st.n}-${s} <small>${SUB_NAME[s]}</small></span><small>${desc(s)}</small><span class="st">${'★'.repeat(stars)}${'☆'.repeat(3-stars)}</span></button>`; }).join('');
   $('map-subs').querySelectorAll('.subbtn').forEach(b=>b.addEventListener('click',()=>{ if(b.disabled)return; if(!S.party.length){$('map-hint').textContent='편성에서 친구를 먼저 골라야 한다.';return;} sfx('tap'); startNode(i,+b.dataset.sub); }));
   $('map-hint').textContent=`${st.n}번 성 ${st.name} — ${st.allBoss?'1·2판은 보스 두 마리가 번갈아 공격하고, 3판은 왕눈악어다.':'1판은 그 성 적만, 2판은 다른 적·난입까지 섞이고, 3판은 보스전.'}${c<P.max?' 지난 챕터라 보상은 60%.':''}`;
 }
@@ -926,7 +943,7 @@ function startNode(i,sub){ cur=i; curSub=sub; const st=STAGES[i];
 function cardHtml(u,extraCls){
   const lv=lvOf(u.id), m=lvMul(u.id);
   const lvb=(extraCls||'').includes('locked')?'':`<button class="lvb" data-lv="${u.id}" ${lv>=MAX_LV||S.xp<lvCost(u.id)?'disabled':''}>${lv>=MAX_LV?'MAX':`Lv.${lv} ▲ ${lvCost(u.id)}XP`}</button>`;
-  return `<div class="card ${extraCls||''}" data-u="${u.id}" role="button" tabindex="0"><img alt="" src="${SRC[u.spr]}"><span class="nm">${u.name}${lv?` <span class="small">Lv.${lv}</span>`:''}</span><span class="st">${u.cost}돈 · HP ${Math.round(u.hp*m)}</span><span class="st">공격 ${Math.round(u.atk*m)} · ${u.tip}</span><span class="st" style="color:${skillOf(u).c}">기술 ${skillOf(u).n}</span>${tagHtml(u)}${lvb}</div>`;
+  return `<div class="card t-${u.tier} ${extraCls||''}" data-u="${u.id}" role="button" tabindex="0"><img alt="" src="${SRC[u.spr]}"><span class="nm">${u.name}${lv?` <span class="small">Lv.${lv}</span>`:''}</span><span class="st">${u.cost}돈 · HP ${Math.round(u.hp*m)}</span><span class="st">공격 ${Math.round(u.atk*m)} · ${u.tip}</span><span class="st" style="color:${skillOf(u).c}">기술 ${skillOf(u).n}</span>${tagHtml(u)}${lvb}</div>`;
 }
 // 편성 줄(위)만 다시 그리고, 아래 목록은 제자리에서 표시만 바꾼다 — 목록을 통째로 다시 그리면 스크롤이 맨 위로 튀기 때문
 function renderPartyRow(){
@@ -935,7 +952,7 @@ function renderPartyRow(){
     h+=u?`<div class="slot filled" data-u="${u.id}" role="button" tabindex="0"><img alt="" src="${SRC[u.spr]}"><span class="nm">${u.name}</span></div>`:`<div class="slot"><span class="empty">빈 자리</span></div>`; }
   row.innerHTML=h;
   row.querySelectorAll('.slot.filled').forEach(s=>s.addEventListener('click',()=>{S.party=S.party.filter(x=>x!==s.dataset.u);save();renderPartyRow();syncRoster();}));
-  $('party-hint').textContent=`출전 ${S.party.length}/10 · XP ${S.xp} · 노란 버튼으로 레벨업(+10%) · 회색은 아직 못 만난 친구`;
+  $('party-hint').innerHTML=`출전 ${S.party.length}/10 · XP ${S.xp} · 노란 버튼으로 레벨업(+10%) · 테두리 <span style="color:#9a9a9a">■기본</span> <span style="color:#1eaa3c">■스크린</span> <span style="color:#2a7fd4">■이벤트</span> <span style="color:#9b3fd8">■슈퍼</span> <span style="color:#d4a300">■특별</span> <span style="color:#ff7a00">■레어</span>`;
 }
 function syncRoster(){ $('roster').querySelectorAll('.card').forEach(c=>c.classList.toggle('in',S.party.includes(c.dataset.u))); }
 function renderParty(keepScroll){
@@ -1420,7 +1437,7 @@ $('res-share').addEventListener('click',()=>{ sfx('tap'); try{ const c=buildShar
 const closeShare=()=>{$('share-modal').hidden=true;};
 // 홈 화면 추가 안내: 첫 점수를 받은 뒤 한 번
 let installEvt=null; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();installEvt=e;});
-const standalone=()=>(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+function standalone(){return (window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;}
 function homeHint(force){
   if(!force&&(S.tut.home||standalone()||$('s-result').hidden))return;
   const ios=/iPhone|iPad|iPod/i.test(navigator.userAgent), kakao=/KAKAOTALK/i.test(navigator.userAgent);
@@ -1682,16 +1699,16 @@ function loop(now){
 // ---------- boss fight: pick one friend, then move / jump / attack ----------
 function traitOf(u){
   const ranged=RANGED(u), m=lvMul(u.id);
-  return {spd:Math.round(170+u.spd*0.5),jump:u.fly?840:780,jump2:u.fly?740:680,hearts:Math.max(3,Math.min(9,Math.round(u.hp*m/45)+3)),reach:ranged?0:Math.min(130,50+u.range),dmg:u.atk*m>=60?2:1,h:Math.max(60,Math.round(u.h*1.05)),ranged,tip:u.tip,skill:skillOf(u)};
+  return {spd:Math.round(170+u.spd*0.5),jump:u.fly?840:780,jump2:u.fly?740:680,hearts:Math.max(4,Math.min(10,Math.round(u.hp*m/45)+4)),reach:ranged?0:Math.min(130,50+u.range),dmg:u.atk*m>=60?2:1,h:Math.max(60,Math.round(u.h*1.05)),ranged,tip:u.tip,skill:skillOf(u)};
 }
-const BOSS_HP={'소':30,'중':40,'대':50};
+const BOSS_HP={'소':27,'중':36,'대':45};
 let pickOpt=null;
 function openPick(opt){
   pickOpt=opt||null; const st=STAGES[cur], bd=BOSSES[st.boss], hp=Math.round(BOSS_HP[diff]*chBoss(chNow()));
   if(pickOpt&&pickOpt.double){ const pool=Object.keys(BOSSES).filter(k=>k!=='eye'); const a=pool.splice(Math.floor(Math.random()*pool.length),1)[0]; const b=pool[Math.floor(Math.random()*pool.length)]; pickOpt.pair=[a,b]; }
   $('pick-sub').textContent=pickOpt&&pickOpt.double?`${BOSSES[pickOpt.pair[0]].name}와 ${BOSSES[pickOpt.pair[1]].name}가 번갈아 공격한다(작지만 둘) · 각 HP ${Math.round(hp*0.6)}`:`${bd.name}이(가) 기다린다 · 보스 HP ${hp} · 하트는 친구마다 다르다`;
   const party=S.party.map(id=>UBY[id]);
-  $('picks').innerHTML=party.map(u=>{const tr=traitOf(u);return `<button class="pick" data-u="${u.id}"><img alt="" src="${SRC[u.spr]}"><b>${u.name}</b><span class="small">하트 ${tr.hearts} · ${tr.ranged?'원거리':'근접'}${tr.dmg>1?' · 한 방 2':''}</span><span class="small" style="color:${tr.skill.c}">기술: ${tr.skill.n}</span></button>`;}).join('');
+  $('picks').innerHTML=party.map(u=>{const tr=traitOf(u);return `<button class="pick t-${u.tier}" data-u="${u.id}"><img alt="" src="${SRC[u.spr]}"><b>${u.name}</b><span class="small">하트 ${tr.hearts} · ${tr.ranged?'원거리':'근접'}${tr.dmg>1?' · 한 방 2':''}</span><span class="small" style="color:${tr.skill.c}">기술: ${tr.skill.n}</span></button>`;}).join('');
   $('picks').querySelectorAll('.pick').forEach(b=>b.addEventListener('click',()=>startBoss(UBY[b.dataset.u])));
   show('s-pick');
 }
@@ -1743,7 +1760,7 @@ function overlap(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
 function hurtPlayer(fromX){
   const p=BF.p; if(p.inv>0||p.dead||BF.over)return;
   if(p.guard>0){ p.guard--; p.inv=0.8; BF.fx.push({x:p.x,y:p.y-p.h*0.6,t:0.4,kind:'puff'}); BF.fx.push({x:p.x,y:p.y-p.h-20,t:0.6,kind:'txt',s:'막았다!',c:'#4f8fc4'}); sfx('tap'); return; }   // 베개·방벽
-  p.hearts--; p.inv=1.3; p.kb=(p.x<fromX?-1:1)*320; BF.fx.push({x:p.x,y:p.y-p.h*0.6,t:0.3,kind:'hit'}); sfx('hurt'); vib([40,30,40]); BF.shake=Math.max(BF.shake,0.3); BF.stop=0.06;
+  p.hearts--; p.inv=1.5; p.kb=(p.x<fromX?-1:1)*320; BF.fx.push({x:p.x,y:p.y-p.h*0.6,t:0.3,kind:'hit'}); sfx('hurt'); vib([40,30,40]); BF.shake=Math.max(BF.shake,0.3); BF.stop=0.06;
   if(p.hearts<=0){p.dead=true;BF.over=true;bossBanner('쓰러졌다…');const me=BF;setTimeout(()=>{if(BF===me)end(false,true);},1200);}
 }
 function hitBoss(dmg,atx,target){
@@ -2198,7 +2215,15 @@ function fit(){
   if(fh>fw*1.05){ const s=Math.min(ih/W,iw/H); st.style.transform=`rotate(90deg) scale(${s})`; }
   else { const s=Math.min(iw/W,ih/H); st.style.transform=`scale(${s})`; }
 }
-window.addEventListener('resize',fit); if(window.visualViewport)window.visualViewport.addEventListener('resize',fit); fit(); setTimeout(fit,300);
+// 회전·주소창 변화 뒤에 치수가 늦게 잡히는 폰이 있어 여러 번 다시 맞춘다
+let fitTimer=[]; function refit(){ fit(); for(const t of fitTimer)clearTimeout(t); fitTimer=[120,350,800,1500].map(ms=>setTimeout(fit,ms)); }
+window.addEventListener('resize',refit); window.addEventListener('orientationchange',refit); if(window.visualViewport)window.visualViewport.addEventListener('resize',refit); if(screen.orientation)screen.orientation.addEventListener('change',refit); fit(); refit();
+// 가로 고정: 전체화면(안드로이드) 또는 홈 화면 앱에서는 기기 회전을 가로로 잠근다. 안 되는 브라우저(아이폰 사파리)는 세로여도 화면을 90° 돌려서 보여준다
+async function lockLandscape(){ try{ if(screen.orientation&&screen.orientation.lock)await screen.orientation.lock('landscape'); }catch(e){} }
+async function goFullscreen(){ try{ const el=document.documentElement; if(!document.fullscreenElement&&el.requestFullscreen){ await el.requestFullscreen({navigationUI:'hide'}); } await lockLandscape(); refit(); return true; }catch(e){ await lockLandscape(); refit(); return false; } }
+document.addEventListener('pointerdown',()=>{ if(standalone())lockLandscape(); },{once:true,capture:true});
+document.addEventListener('fullscreenchange',refit);
+$('fs-btn').addEventListener('click',async()=>{ sfx('tap'); const ok=await goFullscreen(); $('fs-msg').textContent=ok?'전체화면·가로 고정했다. 나가려면 뒤로 가기.':(/iPhone|iPad/i.test(navigator.userAgent)?'아이폰 사파리는 전체화면이 안 된다. 세로로 들어도 화면은 가로로 돌아가고, 홈 화면에 추가하면 가로로 고정된다.':'이 브라우저는 전체화면을 막았다. 홈 화면에 추가하면 가로로 고정된다.'); });
 // 점검용 훅: 콘솔에서 __akeo.boss(2) 하면 3번 성 보스전으로 바로 간다
 applyOpt();
 window.__akeo={boss:(i,d)=>{if(d)diff=d;cur=i;openPick();},battle:(i,d,sub)=>{if(d)diff=d;startBattle(i,sub||1);},node:(i,sub,d)=>{if(d)diff=d;startNode(i,sub);},state:()=>({B,BF,S}),bgm:()=>({name:seqName,rendered:Object.keys(BGM_BUF),live:!!seqTimer,playing:!!bgmSrc,buf:BGM_BUF[seqName]||null,ctx:AU.ctx}),hit:a=>hitBase(a),killBoss:()=>hitBoss(9999,BF.boss.x),
