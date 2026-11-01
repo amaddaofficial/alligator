@@ -731,7 +731,7 @@ function migrateProg(o){
   return out;
 }
 const RAMP=1.2;
-const DIFF={'소':{hp:1.1,base:1,reward:1},'중':{hp:1.3,base:1.5,reward:1.6},'대':{hp:1.7,base:2.2,reward:2.5}};
+const DIFF={'소':{hp:1.1,base:1,reward:1},'중':{hp:1.3,base:1.5,reward:1.6},'대':{hp:1.87,base:2.42,reward:2.5}};
 const BOSSES={
  frog:   {name:'왕개구리', spr:'boss_frog',   h:250,patterns:['slam','tongue','hops']},
  gorilla:{name:'킹고릴라', spr:'boss_gorilla',h:250,patterns:['handslam','rocks','chest']},
@@ -1731,7 +1731,7 @@ function traitOf(u){
   const ranged=RANGED(u), m=lvMul(u.id);
   return {spd:Math.round(170+u.spd*0.5),jump:u.fly?840:780,jump2:u.fly?740:680,hearts:Math.max(4,Math.min(10,Math.round(u.hp*m/45)+4)),reach:ranged?0:Math.min(130,50+u.range),dmg:u.atk*m>=60?2:1,h:Math.max(60,Math.round(u.h*1.05)),ranged,tip:u.tip,skill:skillOf(u)};
 }
-const BOSS_HP={'소':27,'중':36,'대':45};
+const BOSS_HP={'소':27,'중':36,'대':47};
 let pickOpt=null;
 function openPick(opt){
   pickOpt=opt||null; const st=STAGES[cur], bd=BOSSES[st.boss], hp=Math.round(BOSS_HP[diff]*chBoss(chNow()));
