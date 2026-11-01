@@ -675,9 +675,9 @@ const EVENT_I=STAGES.findIndex(s=>s.event);
 const PLAYABLE=STAGES.filter(s=>!s.locked&&!s.hidden).length;
 // 챕터 1~5: 성 안(X-1·X-2·X-3)에서는 거의 안 세지고, 챕터 사이에서 크게 센다
 const MAX_CH=5, SUBS=3;
-const chEnemy=c=>1+0.7*(c-1);    // 적 HP·공격: 2챕터 1.7배 … 5챕터 3.8배
+const chEnemy=c=>(1+0.7*(c-1))*(c>=2?1.15:1);   // 2챕터부터 일반 적 HP·공격 +15% 더    // 적 HP·공격: 2챕터 1.7배 … 5챕터 3.8배
 const chCount=c=>1+0.2*(c-1);    // 적 수
-const chBoss=c=>1+0.6*(c-1);     // 보스 HP
+const chBoss=c=>(1+0.6*(c-1))*(c>=2?0.9:1);     // 2챕터부터 보스 HP -10%     // 보스 HP
 const chReward=c=>1+0.6*(c-1);   // 보상
 const chAlly=c=>1+0.2*(c-1);     // 친구는 조금만
 const SUB_NAME={1:'단독',2:'혼합',3:'보스'};
