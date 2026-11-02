@@ -701,7 +701,7 @@ function migrateProg(o){
   return out;
 }
 const RAMP=1.2;
-const DIFF={'소':{hp:1.1,base:1,reward:1},'중':{hp:1.3,base:1.5,reward:1.6},'대':{hp:1.87,base:2.42,reward:2.5}};
+const DIFF={'소':{hp:1.1,base:1,reward:1},'중':{hp:1.56,base:1.8,reward:1.6},'대':{hp:2.8,base:3.63,reward:2.5}};
 const BOSSES={
  frog:   {name:'왕개구리', spr:'boss_frog',   h:250,patterns:['slam','tongue','hops']},
  gorilla:{name:'킹고릴라', spr:'boss_gorilla',h:250,patterns:['handslam','rocks','chest']},
@@ -1130,7 +1130,7 @@ function deploy(u){
   B.allies.push({side:'a',def:u,style:styleOf(u),swing:0,sk:skillOf(u),skCd:5+Math.random()*4,skFlash:0,shieldT:0,lvm:lvMul(u.id),x:BASE_X-70-Math.random()*20,y:GROUND,hp,max:hp,face:-1,atk:0,hw,h:u.h,flash:0,lunge:0,hop:0,spinT:0,breathT:0,cyc:Math.random()*3,asleep:false,dead:false,fade:1,slow:0,pop:0.3,dvx:0,dvy:0,rot:0});
 }
 function spawnEnemy(def,idx,big,elite){
-  let mul=1.15*DIFF[diff].hp*(1+RAMP*idx/Math.max(1,B.total-1))*chEnemy(B.ch||1)*(def.intruder?(1+0.25*B.i):1);   // 일반 적 HP +15%
+  let mul=1.32*DIFF[diff].hp*(1+RAMP*idx/Math.max(1,B.total-1))*chEnemy(B.ch||1)*(def.intruder?(1+0.25*B.i):1);   // 일반 적 HP +15%
   if(big){ def=Object.assign({},def,{name:'큰 '+def.name,bounty:def.bounty*5,atk:def.atk*1.6,mid:true}); mul*=4; }
   if(elite){ def=Object.assign({},def,{name:'강화 '+def.name,bounty:Math.round(def.bounty*2.2),atk:def.atk*1.4,elite:true,tint:'#b04a3a'}); mul*=2; }   // 다른 성에서 온 적은 강화형
   const h=def.h*(big?1.35:1)*(elite?1.15:1)*(1+0.12*Math.log2(Math.max(1,big?mul/4:mul)));
@@ -1701,7 +1701,7 @@ function traitOf(u){
   const ranged=RANGED(u), m=lvMul(u.id);
   return {spd:Math.round(170+u.spd*0.5),jump:u.fly?840:780,jump2:u.fly?740:680,hearts:Math.max(4,Math.min(10,Math.round(u.hp*m/45)+4)),reach:ranged?0:Math.min(130,50+u.range),dmg:u.atk*m>=60?2:1,h:Math.max(60,Math.round(u.h*1.05)),ranged,tip:u.tip,skill:skillOf(u)};
 }
-const BOSS_HP={'소':27,'중':36,'대':47};
+const BOSS_HP={'소':27,'중':40,'대':56};
 let pickOpt=null;
 function openPick(opt){
   pickOpt=opt||null; const st=STAGES[cur], bd=BOSSES[st.boss], hp=Math.round(BOSS_HP[diff]*chBoss(chNow()));
